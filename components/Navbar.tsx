@@ -74,6 +74,9 @@ const Navbar = () => {
                 <MobileNavLink href="/register" onClick={toggleMenu}>
                   Contact
                 </MobileNavLink>
+                <MobileNavLink href="/blog" onClick={toggleMenu}>
+                  Blog
+                </MobileNavLink>
                 <Link
                   href="/book-call"
                   className="bg-primary hover:bg-primary-light text-white px-6 py-2 rounded-xl 
