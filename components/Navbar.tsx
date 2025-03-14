@@ -45,6 +45,7 @@ const Navbar = () => {
               <NavLink href="/courses">Courses</NavLink>
               <NavLink href="/teachers">Teachers</NavLink>
               <NavLink href="/register">Contact</NavLink>
+              <NavLink href="/blog">Blog</NavLink>
             </div>
 
             {/* CTA Button (Desktop Only) */}
