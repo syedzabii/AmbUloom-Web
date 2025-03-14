@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { apiClient } from "@/services/api-client";
+import Image from "next/image";
 
 export default function AdmissionForm() {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function AdmissionForm() {
         localStorage.setItem("studentName", formData.studentName);
 
         toast.success("Student registered successfully!");
-        if (formData.age > 17) {
+        if (parseInt(formData.age) > 17) {
           router.push("/success");
         } else {
           router.push("/success-kids");
@@ -81,6 +82,15 @@ export default function AdmissionForm() {
           <h1 className="text-4xl font-bold text-center text-primary mb-8">
             AMBAA UL ULOOM
           </h1>
+          <div className="flex  justify-center">
+            <Image
+              src="/images/image.png"
+              alt=""
+              className="rounded-full h-40 w-40"
+              height={100}
+              width={100}
+            />
+          </div>
           <h2 className="text-2xl font-semibold text-center text-[#4A6DA7] mb-6">
             Admission Form
           </h2>
