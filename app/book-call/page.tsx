@@ -10,7 +10,7 @@ const BookACallPage = () => {
         {/* Page Header */}
         <div className="text-center mb-16">
           <h1 className="font-jakarta text-display-xl font-bold text-primary-dark mb-6">
-            Book a Free 30-Minute Call
+            Book a Free 20-Minute Call
           </h1>
           <p className="text-body-lg text-text-secondary max-w-2xl mx-auto">
             Start your Quran learning journey today! Follow these simple steps
@@ -25,51 +25,34 @@ const BookACallPage = () => {
             icon={<Phone className="w-8 h-8 text-primary" />}
             step="Step 1"
             title="Contact Us"
-            description="Fill out the form below to let us know your preferences and availability."
+            description="Fill out the form to let us know your preferences and availability."
           >
-            <form className="mt-6 space-y-4">
-              <input
-                type="text"
-                placeholder="Your Name"
-                className="w-full px-4 py-2 rounded-lg border border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <input
-                type="email"
-                placeholder="Your Email"
-                className="w-full px-4 py-2 rounded-lg border border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <input
-                type="tel"
-                placeholder="Your Phone Number"
-                className="w-full px-4 py-2 rounded-lg border border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary-light text-white px-6 py-2 rounded-lg 
+            <Link
+              href="/register"
+              className="bg-primary hover:bg-primary-light text-white px-6 py-2 rounded-lg 
                           transition-all duration-200 shadow-button hover:shadow-button-hover
-                          transform hover:-translate-y-0.5"
-              >
-                Submit
-              </button>
-            </form>
+                          transform hover:-translate-y-0.5 block text-center"
+            >
+              Fill Form
+            </Link>
           </StepCard>
 
           {/* Step 2: Free 30-Minute Call */}
           <StepCard
             icon={<Calendar className="w-8 h-8 text-primary" />}
             step="Step 2"
-            title="Free 30-Minute Call"
-            description="Schedule a free 30-minute call with your selected tutor to discuss your goals and preferences."
+            title="Free 20-Minute Call"
+            description="A free 20-minute call with your selected tutor to discuss your goals and preferences."
           >
             <div className="mt-6">
-              <Link
+              {/* <Link
                 href="/schedule-call"
                 className="bg-primary hover:bg-primary-light text-white px-6 py-2 rounded-lg 
                           transition-all duration-200 shadow-button hover:shadow-button-hover
                           transform hover:-translate-y-0.5 block text-center"
               >
                 Schedule Call
-              </Link>
+              </Link> */}
             </div>
           </StepCard>
 
@@ -82,7 +65,7 @@ const BookACallPage = () => {
           >
             <div className="mt-6">
               <Link
-                href="/plans"
+                href="/courses"
                 className="bg-primary hover:bg-primary-light text-white px-6 py-2 rounded-lg 
                           transition-all duration-200 shadow-button hover:shadow-button-hover
                           transform hover:-translate-y-0.5 block text-center"
@@ -94,7 +77,7 @@ const BookACallPage = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="mt-20 text-center">
+        {/* <div className="mt-20 text-center">
           <h2 className="font-jakarta text-display-lg font-bold text-primary-dark mb-6">
             Ready to Start Your Journey?
           </h2>
@@ -110,7 +93,7 @@ const BookACallPage = () => {
           >
             Book a Call
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
