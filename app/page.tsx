@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import CoursePath from "../components/CoursePath";
-import TestimonialsSection from "../components/TestimonialsSection";
 import StudentBanner from "../components/StudentBanner";
 import BenefitsSection from "../components/BenefitsSection"; // Import the new component
 
@@ -57,9 +56,6 @@ export default function Home() {
 
       {/* Course Path Section */}
       <CoursePath />
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
     </div>
   );
 }
