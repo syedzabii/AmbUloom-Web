@@ -50,7 +50,7 @@ export default function Footer() {
               <FooterLink href="/courses">Our Courses</FooterLink>
               <FooterLink href="/about">About Us</FooterLink>
               <FooterLink href="/register">Contact</FooterLink>
-              <FooterLink href="/faq">FAQs</FooterLink>
+              <FooterLink href="/">FAQs</FooterLink>
             </ul>
           </motion.div>
 

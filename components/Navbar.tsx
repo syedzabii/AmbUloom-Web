@@ -20,7 +20,7 @@ const Navbar = () => {
             <div className="flex items-center">
               <Link href="/" className="flex items-center space-x-2">
                 <span className="text-xl font-bold text-text-primary">
-                  Amba ul Uloom
+                  AMBAA UL ULOOM
                 </span>
               </Link>
             </div>

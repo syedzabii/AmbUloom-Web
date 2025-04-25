@@ -74,7 +74,7 @@ export default function StudentBanner() {
             variants={itemVariants}
           >
             <motion.h3 className="text-display-md font-bold text-primary-dark">
-              <AnimatedNumber value={110} />
+              <AnimatedNumber value={315} />
             </motion.h3>
             <p className="text-body-md text-text-secondary mt-2">
               Students Enrolled
@@ -87,7 +87,7 @@ export default function StudentBanner() {
             variants={itemVariants}
           >
             <motion.h3 className="text-display-md font-bold text-primary-dark">
-              <AnimatedNumber value={4} />
+              <AnimatedNumber value={13} />
             </motion.h3>
             <p className="text-body-md text-text-secondary mt-2">
               Expert Teachers
@@ -100,7 +100,7 @@ export default function StudentBanner() {
             variants={itemVariants}
           >
             <motion.h3 className="text-display-md font-bold text-primary-dark">
-              Global
+              <AnimatedNumber value={50} />
             </motion.h3>
             <p className="text-body-md text-text-secondary mt-2">
               Students Across the Globe

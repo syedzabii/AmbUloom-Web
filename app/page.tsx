@@ -1,9 +1,11 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import CoursePath from "../components/CoursePath";
 import StudentBanner from "../components/StudentBanner";
-import BenefitsSection from "../components/BenefitsSection"; // Import the new component
+import BenefitsSection from "../components/BenefitsSection"; 
+import FAQs from "../components/FAQs";
 
 export default function Home() {
   return (
@@ -31,7 +33,7 @@ export default function Home() {
                            bg-secondary hover:bg-secondary-dark rounded-xl shadow-button hover:shadow-button-hover 
                            transform hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  Register
+                  Sign up as Student
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
@@ -40,9 +42,18 @@ export default function Home() {
                            text-primary-dark bg-white border-2 border-primary hover:bg-primary-50 
                            rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
                 >
-                  Login
+                  Sign up as Teacher
                 </Link>
               </div>
+            </div>
+            <div className="flex-1 flex justify-center">
+              <Image 
+                src="/images/Ambaimage.png" 
+                alt="Logo"
+                width={300}
+                height={300}
+                className="object-contain"
+              />
             </div>
           </div>
         </div>
@@ -55,7 +66,8 @@ export default function Home() {
       <BenefitsSection />
 
       {/* Course Path Section */}
-      <CoursePath />
+      {/* <CoursePath /> */}
+      <FAQs/>
     </div>
   );
 }

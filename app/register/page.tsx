@@ -57,11 +57,11 @@ export default function RegisterPage() {
     try {
       const response = await fetch("/api/register", { method: "POST" });
 
-      if (response.ok) {
-        router.push("/verification");
-      } else {
-        console.error("Failed to register");
-      }
+      // if (response.ok) {
+      //   router.push("/verification");
+      // } else {
+      //   console.error("Failed to register");
+      // }
     } catch (error) {
       console.error("Error:", error);
     }
@@ -88,8 +88,7 @@ export default function RegisterPage() {
         course: selectedCourse,
         remarks: (form.elements.namedItem("remarks") as HTMLTextAreaElement)
           .value,
-        termsAccepted: (form.elements.namedItem("terms") as HTMLInputElement)
-          .checked,
+        termsAccepted: true,
       };
 
       console.log("Form submission data:", formData);
@@ -127,7 +126,7 @@ export default function RegisterPage() {
                 Start Your Journey
               </h1>
               <p className="text-body-lg text-text-secondary mb-8">
-                Join our community of learners today
+                Fill this form and we will reach out to you.
               </p>
 
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
@@ -259,7 +258,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Terms & Conditions */}
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     name="terms"
@@ -280,7 +279,7 @@ export default function RegisterPage() {
                       Terms & Conditions
                     </Link>
                   </label>
-                </div>
+                </div> */}
 
                 {/* Submit Button */}
                 <button
@@ -294,7 +293,7 @@ export default function RegisterPage() {
                   {isLoading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Creating Account...</span>
+                      <span>Enrolling you...</span>
                     </>
                   ) : (
                     <>
