@@ -23,7 +23,7 @@ export default function AboutUs() {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-emerald-800 mb-8">Our Story</h2>
             <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-              AMBAA UL ULOOM was founded in 2021 by Muhammed Izzur Rahman alongside two friends—Syed Ismail Zabih Ullah and Muhammed Waseem. This humble beginning took root under the loving care and spiritual patronage of our father, Hazrath Maulana Mufti Muhammed Atheeq ur Rahman Saheb (رحمه الله)—the esteemed Founder and Principal of Madrasa al-Kulliya Tus Sawoodiya.
+              AMBAA UL ULOOM was founded in 2021 by Muhammed Izzur Rahman alongside two friends—Syed Ismail Zabiulla and Muhammed Waseem. This humble beginning took root under the loving care and spiritual patronage of our father,<span className="font-bold"> Hazrath Maulana Mufti Muhammed Atheeq ur Rahman Saheb (رحمه الله)</span>—the esteemed Founder and Principal of <span className="font-bold">Madrasa al-Kulliya Tus Sawoodiya</span>.
             </p>
             <p className="text-gray-700 text-lg leading-relaxed">
               What began as a small initiative has now blossomed into a global community of learners, united by their love for the Qur'an and dedication to authentic Islamic knowledge.
