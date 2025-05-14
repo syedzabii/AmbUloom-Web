@@ -10,7 +10,7 @@ export default function AboutUs() {
       {/* Hero Section */}
       <section className="bg-emerald-800 text-white py-20">
         <div className="container mx-auto px-6 md:px-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">About AMBAA UL ULOOM</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mt-5 mb-6">About AMBAA UL ULOOM</h1>
           <p className="text-xl max-w-3xl mx-auto">
             Illuminating lives with the timeless wisdom of the Qur'an—transforming hearts and minds one ayah at a time.
           </p>

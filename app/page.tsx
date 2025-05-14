@@ -2,14 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import CoursePath from "../components/CoursePath";
 import StudentBanner from "../components/StudentBanner";
 import BenefitsSection from "../components/BenefitsSection"; 
 import FAQs from "../components/FAQs";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mt-16">
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-16 pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

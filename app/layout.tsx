@@ -51,7 +51,7 @@ export default function RootLayout({
     <html lang="en" className={`${plusJakarta.variable} ${inter.variable}`}>
       <body className="font-inter bg-gradient-to-b from-primary-50 to-white min-h-screen">
         <Navbar />
-        <div className="mt-10"> {children}</div>
+        <div className=""> {children}</div>
         <Footer />
       </body>
     </html>
