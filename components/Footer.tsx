@@ -58,11 +58,19 @@ export default function Footer() {
           <motion.div variants={item} className="space-y-4">
             <h4 className="text-lg font-semibold">Courses</h4>
             <ul className="space-y-2">
-              <FooterLink href="/courses/noorani-qaida">
-                Noorani Qaida
+              <FooterLink href="/courses">Noorani Qaida</FooterLink>
+              <FooterLink href="/courses">Nazeera Quran</FooterLink>
+              <FooterLink href="/courses">
+                Tajweed (basic to advanced)
               </FooterLink>
-              <FooterLink href="/courses/nazeera">Nazeera</FooterLink>
-              <FooterLink href="/courses/hifz">Hifz</FooterLink>
+              <FooterLink href="/courses">
+                Hifz-ul-Quran (memorization)
+              </FooterLink>
+              <FooterLink href="/courses">
+                Tafseer & Quran Translation
+              </FooterLink>
+              <FooterLink href="/courses">Deeniyat </FooterLink>
+              <FooterLink href="/courses">Qirat and more! </FooterLink>
             </ul>
           </motion.div>
 
@@ -71,8 +79,8 @@ export default function Footer() {
             <h4 className="text-lg font-semibold">Contact Us</h4>
             <ul className="space-y-2 text-gray-300">
               <li>Email: info@ambuloom.com</li>
-              <li>Phone: +1 234 567 890</li>
-              <li>Address: Your Address Here</li>
+              <li>Phone: +91 82963 31365</li>
+              <li>Address: 13, Bore Bank Rd, Byadarahalli, Benson Town, Bengaluru, Karnataka 560046</li>
             </ul>
           </motion.div>
         </motion.div>

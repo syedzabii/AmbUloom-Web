@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Minus } from 'lucide-react';
 
 interface FAQItem {
   id: number;
@@ -9,6 +9,7 @@ interface FAQItem {
 
 export default function FAQs() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [showAllFAQs, setShowAllFAQs] = useState(false);
 
   const toggleFAQ = (index: number) => {
     setOpenFAQ(openFAQ === index ? null : index);
@@ -80,57 +81,78 @@ export default function FAQs() {
     }
   ];
 
+  const visibleFAQs = showAllFAQs ? faqs : faqs.slice(0, 5);
+
   return (
-    <section className="py-16 bg-background-secondary font-jakarta">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-display-md font-bold text-primary-dark mb-3">
+          <h2 className="text-3xl font-bold text-emerald-800 mb-3">
             Frequently Asked Questions
           </h2>
-          <p className="text-body-lg text-text-secondary">
-            About AMBAA UL ULOOM Online Quran Classes
+          <p className="text-lg text-gray-600">
+            Find answers to common questions about AMBAA UL ULOOM Online Quran Classes
           </p>
         </div>
         
         <div className="space-y-4">
-          {faqs.map((faq) => (
+          {visibleFAQs.map((faq) => (
             <div 
               key={faq.id} 
-              className="border border-primary-100 rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md"
+              className="bg-white rounded-xl overflow-hidden shadow-md border-l-4 border-emerald-500 transition-all duration-300 hover:shadow-lg"
             >
               <button
-                className={`flex justify-between items-center w-full px-6 py-5 text-left focus:outline-none transition-colors duration-200 ${
-                  openFAQ === faq.id ? 'bg-primary-50' : 'bg-white hover:bg-primary-50/50'
-                }`}
+                className="flex justify-between items-center w-full px-6 py-5 text-left focus:outline-none"
                 onClick={() => toggleFAQ(faq.id)}
               >
-                <span className="font-medium text-text-primary flex items-center">
-                  <span className="text-secondary-DEFAULT mr-3 font-semibold">📌</span>
-                  <span className={`${openFAQ === faq.id ? 'text-primary-DEFAULT font-semibold' : ''}`}>
+                <span className="font-medium text-gray-800 flex items-center">
+                  <span className="text-emerald-600 mr-3">
+                    {openFAQ === faq.id ? 
+                      <Minus className="h-5 w-5" /> : 
+                      <Plus className="h-5 w-5" />
+                    }
+                  </span>
+                  <span className={`${openFAQ === faq.id ? 'text-emerald-700 font-semibold' : ''}`}>
                     {faq.question}
                   </span>
                 </span>
-                <div className={`rounded-full p-1 ${openFAQ === faq.id ? 'bg-primary-100 text-primary-DEFAULT' : 'text-text-tertiary'}`}>
-                  {openFAQ === faq.id ? (
-                    <ChevronUp className="h-5 w-5" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5" />
-                  )}
-                </div>
               </button>
               
               {openFAQ === faq.id && (
                 <div 
-                  className="px-6 py-5 bg-white border-t border-primary-100"
-                  style={{ boxShadow: 'inset 0 3px 6px -3px rgba(0,0,0,0.1)' }}
+                  className="px-6 py-5 bg-white border-t border-gray-100"
                 >
-                  <div className="text-text-secondary text-body-md leading-relaxed">
+                  <div className="text-gray-600 leading-relaxed pl-8">
                     {faq.answer}
                   </div>
                 </div>
               )}
             </div>
           ))}
+          
+          {!showAllFAQs && (
+            <div className="text-center mt-8">
+              <button 
+                onClick={() => setShowAllFAQs(true)}
+                className="px-6 py-3 bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition-colors duration-300 flex items-center mx-auto"
+              >
+                <span>Show More Questions</span>
+                <ChevronDown className="ml-2 h-5 w-5" />
+              </button>
+            </div>
+          )}
+          
+          {showAllFAQs && (
+            <div className="text-center mt-8">
+              <button 
+                onClick={() => setShowAllFAQs(false)}
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-300 flex items-center mx-auto"
+              >
+                <span>Show Less</span>
+                <ChevronUp className="ml-2 h-5 w-5" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>

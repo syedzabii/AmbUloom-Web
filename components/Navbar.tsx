@@ -46,6 +46,7 @@ const Navbar = () => {
               <NavLink href="/teachers">Teachers</NavLink>
               <NavLink href="/register">Contact</NavLink>
               <NavLink href="/blog">Blog</NavLink>
+              <NavLink href="/about-us">About Us</NavLink>
             </div>
 
             {/* CTA Button (Desktop Only) */}
@@ -76,6 +77,9 @@ const Navbar = () => {
                 </MobileNavLink>
                 <MobileNavLink href="/blog" onClick={toggleMenu}>
                   Blog
+                </MobileNavLink>
+                <MobileNavLink href="/about-us" onClick={toggleMenu}>
+                  About Us
                 </MobileNavLink>
                 <Link
                   href="/book-call"
