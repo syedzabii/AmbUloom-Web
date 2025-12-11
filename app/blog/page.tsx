@@ -120,7 +120,7 @@ export default function BlogPage() {
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-full h-40 object-cover"
+                className="w-full h-auto object-contain"
               />
               <div className="p-4">
                 <span className="text-xs text-green-700 font-medium">

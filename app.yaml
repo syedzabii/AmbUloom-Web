@@ -1,0 +1,37 @@
+service: website
+runtime: nodejs20
+
+env: standard
+instance_class: F1 # Keep F1 - it's the cheapest option
+
+env_variables:
+  NEXT_PUBLIC_APP_BASE_URL: "https://pelagic-hope-444410-f9.el.r.appspot.com"
+  NEXT_PUBLIC_APP_WAPP_LINK: "https://chat.whatsapp.com/GXWWvfMU2u6GnzdiJlCCYx"
+  TZ: "Asia/Kolkata"
+
+handlers:
+  - url: /robots.txt
+    static_files: public/robots.txt
+    upload: public/robots.txt
+    secure: always
+  - url: /favicon.ico
+    static_files: app/favicon.ico
+    upload: app/favicon.ico
+    secure: always
+  - url: /images/.*
+    static_files: public/images/\1
+    upload: public/images/.*
+    secure: always
+  - url: /.*
+    secure: always
+    script: auto
+
+automatic_scaling:
+  min_instances: 0 # Perfect - no always-on instances
+  max_instances: 1 # Keep at 1 for now
+  target_cpu_utilization: 0.8 # Higher threshold before scaling
+  target_throughput_utilization: 0.9 # Handle more requests per instance
+  max_idle_instances: 0 # Don't keep idle instances running
+  min_idle_instances: 0 # Force complete shutdown when not in use
+  max_pending_latency: 15s # Allow longer wait times to avoid spinning up instances
+  min_pending_latency: 5s # Be more patient before creating new instances

@@ -3,7 +3,7 @@ import { motion, useSpring, useTransform } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 
-function AnimatedNumber({ value }) {
+function AnimatedNumber({ value }: { value: number }) {
   const [ref, inView] = useInView({
     triggerOnce: true, // Trigger animation only once
     threshold: 0.1, // Lower threshold so it triggers earlier

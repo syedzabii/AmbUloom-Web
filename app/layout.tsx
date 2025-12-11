@@ -25,10 +25,23 @@
 //   );
 // }
 // app/layout.tsx
+import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import Navbar from "../components/Navbar";
 import "./globals.css";
 import Footer from "../components/Footer";
+
+export const metadata: Metadata = {
+  title: "Ambaa Ul Uloom - Learn Quran Online",
+  description: "Learn Quran online with expert teachers. Start your journey with Noorani Qaida, Nazeera, or Hifz courses.",
+  keywords: ["Quran learning", "online Quran", "Islamic education", "Noorani Qaida", "Hifz", "Nazeera"],
+  authors: [{ name: "Ambaa Ul Uloom" }],
+  openGraph: {
+    title: "Ambaa Ul Uloom - Learn Quran Online",
+    description: "Learn Quran online with expert teachers. Start your journey with Noorani Qaida, Nazeera, or Hifz courses.",
+    type: "website",
+  },
+};
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],

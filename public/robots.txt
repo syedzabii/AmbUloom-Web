@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://ambaquran.com/sitemap.xml
+
+# Disallow admin areas (if any)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+
+# Allow search engines to crawl all public content
+Allow: /courses
+Allow: /teachers
+Allow: /blog
+Allow: /about-us
+Allow: /register
+Allow: /register-teacher

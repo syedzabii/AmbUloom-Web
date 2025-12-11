@@ -1,0 +1,10 @@
+dispatch:
+  - url: "ambaquran.com/*"
+    service: website
+  - url: "dashboard.ambaquran.com/*"
+    service: dashboard
+  - url: "syedi.dev/*"
+    service: portfolio
+  - url: "worrylessmeds.com/*"
+    service: worrylessmeds
+  

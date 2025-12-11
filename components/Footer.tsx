@@ -31,7 +31,8 @@ export default function Footer() {
         >
           {/* Brand Section */}
           <motion.div variants={item} className="space-y-4">
-            <h3 className="text-xl font-bold">Ambuloom</h3>
+            <h3 className="text-xl font-bold">AMBAA UL ULOOM 
+            </h3>
             <p className="text-gray-300">
               Learn Quran online with expert teachers anytime, anywhere.
             </p>
@@ -48,7 +49,7 @@ export default function Footer() {
             <h4 className="text-lg font-semibold">Quick Links</h4>
             <ul className="space-y-2">
               <FooterLink href="/courses">Our Courses</FooterLink>
-              <FooterLink href="/about">About Us</FooterLink>
+              <FooterLink href="/about-us">About Us</FooterLink>
               <FooterLink href="/register">Contact</FooterLink>
               <FooterLink href="/">FAQs</FooterLink>
             </ul>
@@ -78,9 +79,12 @@ export default function Footer() {
           <motion.div variants={item} className="space-y-4">
             <h4 className="text-lg font-semibold">Contact Us</h4>
             <ul className="space-y-2 text-gray-300">
-              <li>Email: info@ambuloom.com</li>
+              <li>Email: ambaaululoom@gmail.com</li>
               <li>Phone: +91 82963 31365</li>
-              <li>Address: 13, Bore Bank Rd, Byadarahalli, Benson Town, Bengaluru, Karnataka 560046</li>
+              <li>
+                Address: 13, Bore Bank Rd, Byadarahalli, Benson Town, Bengaluru,
+                Karnataka 560046
+              </li>
             </ul>
           </motion.div>
         </motion.div>
@@ -91,7 +95,8 @@ export default function Footer() {
           className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-300"
         >
           <p>
-            &copy; {new Date().getFullYear()} Ambuloom. All rights reserved.
+            &copy; {new Date().getFullYear()} AMBAA UL ULOOM. All rights
+            reserved.
           </p>
         </motion.div>
       </div>

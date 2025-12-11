@@ -36,7 +36,7 @@ export default function Home() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
-                  href="/login"
+                  href="/register-teacher"
                   className="inline-flex items-center justify-center px-8 py-3 text-body-md font-medium 
                            text-primary-dark bg-white border-2 border-primary hover:bg-primary-50 
                            rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
