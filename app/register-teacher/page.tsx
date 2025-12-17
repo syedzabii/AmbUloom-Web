@@ -38,6 +38,14 @@ interface TeacherRegisterFormData {
   termsAccepted: boolean;
 }
 
+// Pre-calculated positions for orbiting specialization cards to avoid hydration mismatches
+const specializationPositions = [
+  { top: "40%", left: "65%" },   // index 0: 0 degrees
+  { top: "65%", left: "40%" },   // index 1: 90 degrees
+  { top: "40%", left: "15%" },   // index 2: 180 degrees
+  { top: "15%", left: "40%" },   // index 3: 270 degrees
+];
+
 const specializations = [
   {
     id: "noorani",
@@ -231,8 +239,8 @@ export default function TeacherRegisterPage() {
                       key={spec.id}
                       className="absolute"
                       style={{
-                        top: `${40 + Math.sin((index * 90) * Math.PI / 180) * 25}%`,
-                        left: `${40 + Math.cos((index * 90) * Math.PI / 180) * 25}%`,
+                        top: specializationPositions[index].top,
+                        left: specializationPositions[index].left,
                       }}
                     >
                       <div className={`w-16 h-16 ${spec.bgColor} rounded-2xl shadow-lg flex items-center justify-center border-2 border-white/20 backdrop-blur-sm`}>

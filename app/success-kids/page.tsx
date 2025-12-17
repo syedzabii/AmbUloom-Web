@@ -31,17 +31,19 @@ export default function SuccessPage() {
     },
   };
 
+  // Note: Confetti is currently commented out, but if uncommented, 
+  // delay values should be generated in useEffect to avoid hydration issues
   const confettiVariants = {
     initial: { y: "-10%", opacity: 0 },
-    animate: {
+    animate: (delay: number = 0) => ({
       y: "110%",
       opacity: [1, 1, 0],
       transition: {
         duration: 5,
         repeat: Infinity,
-        delay: Math.random() * 5,
+        delay: delay,
       },
-    },
+    }),
   };
 
   return (

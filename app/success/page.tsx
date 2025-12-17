@@ -3,30 +3,75 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
+interface ParticleData {
+  width: number;
+  height: number;
+  left: string;
+  top: string;
+  background: string;
+  x: number;
+  y: number;
+  duration: number;
+  delay: number;
+  repeatDelay: number;
+}
+
 export default function SuccessPage() {
   const router = useRouter();
   const [studentName, setStudentName] = useState("");
+  const [particles, setParticles] = useState<ParticleData[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const name = localStorage.getItem("studentName") || "Student";
     setStudentName(name);
+    
+    // Generate particle data only on client side
+    const colors = [
+      "#FF6B6B",
+      "#4ECDC4",
+      "#45B7D1",
+      "#FFA931",
+      "#7477BF",
+      "#98D8C8",
+      "#F06595",
+      "#845EC2",
+      "#D65DB1",
+      "#FFC75F",
+    ];
+    
+    const particleData: ParticleData[] = Array.from({ length: 30 }).map((_, i) => ({
+      width: 10 + Math.random() * 20,
+      height: 10 + Math.random() * 20,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      background: colors[i % 10],
+      x: Math.sin(i) * 150 + Math.random() * 50,
+      y: Math.cos(i) * 150 + Math.random() * 50,
+      duration: 4 + Math.random() * 3,
+      delay: Math.random() * 2,
+      repeatDelay: Math.random() * 2,
+    }));
+    
+    setParticles(particleData);
   }, []);
 
   // Enhanced particle animations
   const particleVariants = {
     initial: { opacity: 0, scale: 0 },
-    animate: (i: number) => ({
+    animate: (particle: ParticleData) => ({
       opacity: [0, 1, 0],
       scale: [0, 1, 0],
-      x: Math.sin(i) * 150 + Math.random() * 50, // More movement
-      y: Math.cos(i) * 150 + Math.random() * 50,
-      rotate: [0, 360], // Add rotation
+      x: particle.x,
+      y: particle.y,
+      rotate: [0, 360],
       transition: {
-        duration: 4 + Math.random() * 3, // Longer duration
-        delay: Math.random() * 2,
+        duration: particle.duration,
+        delay: particle.delay,
         ease: "easeInOut",
         repeat: Infinity,
-        repeatDelay: Math.random() * 2,
+        repeatDelay: particle.repeatDelay,
       },
     }),
   };
@@ -63,31 +108,20 @@ export default function SuccessPage() {
         className="max-w-3xl w-full relative"
       >
         {/* Animated background particles */}
-        {Array.from({ length: 30 }).map((_, i) => (
+        {isMounted && particles.map((particle, i) => (
           <motion.div
             key={`particle-${i}`}
-            custom={i}
+            custom={particle}
             variants={particleVariants}
             initial="initial"
             animate="animate"
             className="absolute rounded-full"
             style={{
-              width: 10 + Math.random() * 20,
-              height: 10 + Math.random() * 20,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: [
-                "#FF6B6B",
-                "#4ECDC4",
-                "#45B7D1",
-                "#FFA931",
-                "#7477BF",
-                "#98D8C8",
-                "#F06595",
-                "#845EC2",
-                "#D65DB1",
-                "#FFC75F",
-              ][i % 10],
+              width: particle.width,
+              height: particle.height,
+              left: particle.left,
+              top: particle.top,
+              background: particle.background,
             }}
           />
         ))}

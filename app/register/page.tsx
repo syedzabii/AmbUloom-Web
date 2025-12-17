@@ -32,6 +32,13 @@ interface RegisterFormData {
 
 
 
+// Pre-calculated positions for orbiting course cards to avoid hydration mismatches
+const coursePositions = [
+  { top: "40%", left: "65%" },   // index 0: 0 degrees
+  { top: "61.65%", left: "27.5%" }, // index 1: 120 degrees
+  { top: "18.35%", left: "27.5%" }, // index 2: 240 degrees
+];
+
 const courses = [
   {
     id: "noorani",
@@ -70,14 +77,16 @@ export default function RegisterPage() {
   const setCookie = async () => {
     try {
       const response = await fetch("/api/register", { method: "POST" });
-
-      // if (response.ok) {
-      //   router.push("/verification");
-      // } else {
-      //   console.error("Failed to register");
-      // }
+      
+      if (!response.ok) {
+        console.error("Failed to set cookie:", response.statusText);
+        return;
+      }
+      
+      // Read the response to ensure the request completes
+      await response.json();
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error setting cookie:", error);
     }
   };
 
@@ -182,8 +191,8 @@ export default function RegisterPage() {
                       key={course.id}
                       className="absolute"
                       style={{
-                        top: `${40 + Math.sin((index * 120) * Math.PI / 180) * 25}%`,
-                        left: `${40 + Math.cos((index * 120) * Math.PI / 180) * 25}%`,
+                        top: coursePositions[index].top,
+                        left: coursePositions[index].left,
                       }}
                     >
                       <div className={`w-16 h-16 ${course.bgColor} rounded-2xl shadow-lg flex items-center justify-center border-2 border-white/20 backdrop-blur-sm`}>
