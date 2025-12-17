@@ -114,14 +114,11 @@ export default function RegisterPage() {
         termsAccepted: true,
       };
 
-      console.log("Form submission data:", formData);
-
       // Send form data to the backend API
       const response = await apiClient.post("/applicant/register", formData);
 
       if (response.status === 201) {
         // Handle successful registration
-        console.log("Registration successful:", response.data);
         await setCookie(); // Set cookie if needed
         // Store student name for success page
         localStorage.setItem("studentName", `${formData.firstName} ${formData.lastName}`);
@@ -441,8 +438,8 @@ export default function RegisterPage() {
                   )}
                 </button>
 
-                {/* Login Link */}
-                <div className="text-center pt-4 border-t border-primary/10">
+                {/* Login Link - Removed until login page is implemented */}
+                {/* <div className="text-center pt-4 border-t border-primary/10">
                   <p className="text-body-sm text-text-secondary">
                     Already part of our community?{" "}
                     <Link 
@@ -452,7 +449,7 @@ export default function RegisterPage() {
                       Sign in here
                     </Link>
                   </p>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>

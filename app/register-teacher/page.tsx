@@ -146,14 +146,11 @@ export default function TeacherRegisterPage() {
         termsAccepted: true,
       };
 
-      console.log("Teacher registration data:", formData);
-
       // Send form data to the backend API
       const response = await apiClient.post("/teacher/register", formData);
 
       if (response.status === 201) {
         // Handle successful registration
-        console.log("Teacher registration successful:", response.data);
         
         // Store teacher name for the success page
         const teacherName = formData.firstName;
@@ -587,8 +584,8 @@ export default function TeacherRegisterPage() {
                   )}
                 </button>
 
-                {/* Login Link */}
-                <div className="text-center pt-4 border-t border-primary/10">
+                {/* Login Link - Removed until login page is implemented */}
+                {/* <div className="text-center pt-4 border-t border-primary/10">
                   <p className="text-xs sm:text-sm text-text-secondary">
                     Already a teacher?{" "}
                     <Link 
@@ -598,7 +595,7 @@ export default function TeacherRegisterPage() {
                       Sign in here
                     </Link>
                   </p>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>
