@@ -114,7 +114,10 @@ export default function RegisterPage() {
         // Handle successful registration
         console.log("Registration successful:", response.data);
         await setCookie(); // Set cookie if needed
-        router.push("/test"); // Redirect to the test page
+        // Store student name for success page
+        localStorage.setItem("studentName", `${formData.firstName} ${formData.lastName}`);
+        // Redirect based on age (same logic as admission form)
+        router.push(formData.age > 17 ? "/success" : "/success-kids");
       } else {
         // Handle unexpected response
         console.error("Unexpected response:", response);
