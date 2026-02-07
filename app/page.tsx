@@ -47,7 +47,7 @@ export default function Home() {
             </div>
             <div className="flex-1 flex justify-center">
               <Image 
-                src="/images/Ambaimage.png" 
+                src="/images/logo_new_1.png" 
                 alt="Logo"
                 width={300}
                 height={300}
