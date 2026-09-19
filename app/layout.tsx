@@ -26,7 +26,7 @@
 // }
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { Inter, Cormorant_Garamond, Amiri } from "next/font/google";
 import Navbar from "../components/Navbar";
 import "./globals.css";
 import Footer from "../components/Footer";
@@ -43,15 +43,24 @@ export const metadata: Metadata = {
   },
 };
 
-const plusJakarta = Plus_Jakarta_Sans({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-cormorant",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const amiri = Amiri({
+  subsets: ["arabic"],
+  variable: "--font-amiri",
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -61,10 +70,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${inter.variable}`}>
-      <body className="font-inter bg-gradient-to-b from-primary-50 to-white min-h-screen">
+    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${amiri.variable}`}>
+       {/* Changed the global background color to #FAFAF7 (bg-background) as requested */}
+      <body className="font-body bg-background min-h-screen text-text-primary selection:bg-gold/20 selection:text-primary-dark">
         <Navbar />
-        <div className=""> {children}</div>
+        <div className="pt-20"> {children}</div>
         <Footer />
       </body>
     </html>

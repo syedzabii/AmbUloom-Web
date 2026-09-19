@@ -1,163 +1,95 @@
-/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  /* Default text styles */
   body {
-    @apply text-text-primary font-inter text-body-md;
+    @apply text-text-primary font-body bg-background;
   }
 
-  /* Heading styles */
-  h1 {
-    @apply font-jakarta text-display-xl font-bold;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold text-primary;
   }
 
-  h2 {
-    @apply font-jakarta text-display-lg font-bold;
-  }
-
-  h3 {
-    @apply font-jakarta text-display-md font-bold;
-  }
-
-  h4 {
-    @apply font-jakarta text-display-sm font-bold;
-  }
-
-  h5 {
-    @apply font-jakarta text-display-xs font-bold;
-  }
-
-  /* Paragraph styles */
+  h1 { @apply text-5xl md:text-6xl lg:text-7xl leading-tight; }
+  h2 { @apply text-4xl md:text-5xl leading-tight; }
+  h3 { @apply text-2xl md:text-3xl leading-snug; }
+  
   p {
-    @apply text-body-md mb-4;
+    @apply text-text-muted leading-relaxed mb-4;
   }
 
-  /* Link styles */
   a {
-    @apply text-primary hover:text-primary-dark transition-colors;
+    @apply transition-colors duration-200;
   }
 }
 
-/* Custom Components */
 @layer components {
-  .title-hero {
-    @apply font-jakarta text-display-2xl font-bold;
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-3 text-base font-medium text-text-inverse 
+           bg-gradient-gold hover:opacity-90 rounded-xl shadow-button hover:shadow-button-hover 
+           transform hover:-translate-y-0.5 transition-all duration-200;
   }
 
-  .subtitle {
-    @apply font-jakarta text-display-xs font-medium text-text-secondary;
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-8 py-3 text-base font-medium 
+           text-primary bg-transparent border-2 border-primary hover:bg-primary/5 
+           rounded-xl shadow-sm hover:shadow-md transition-all duration-200;
   }
 
-  .text-caption {
-    @apply text-body-sm text-text-tertiary;
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-card hover:shadow-card-hover transition-all duration-300 rounded-2xl;
   }
 }
 
-/* Animations */
 @layer utilities {
-  /* Testimonials Scroll Animation */
-  @keyframes scroll {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(calc(-50% - 2rem));
-    }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-gold;
   }
 
-  /* Floating Animations */
-  @keyframes float-rotate {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0.5;
-    }
-    50% {
-      transform: translateY(-20px) rotate(5deg);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0.5;
-    }
+  /* Islamic Geometry Background Pattern (SVG inline via CSS, or just class for component usage) */
+  .pattern-islamic {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30 30 0zm0 10L10 30l20 20 20-20L30 10z' fill='%23C8972A' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
   }
 
-  @keyframes bounce-slow {
-    0%, 100% {
-      transform: translateY(0) scale(1);
-    }
-    50% {
-      transform: translateY(-15px) scale(1.05);
-    }
+  /* Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
   }
 
-  @keyframes pulse-fade {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 0.3;
-    }
-    50% {
-      transform: scale(1.5);
-      opacity: 0.7;
-    }
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(200%); }
+  }
+  
+  @keyframes scroll-x {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 
-  @keyframes float-disappear {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 0;
-    }
-    25% {
-      transform: translateY(-10px) scale(1.1);
-      opacity: 1;
-    }
-    75% {
-      transform: translateY(-20px) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-30px) scale(0.8);
-      opacity: 0;
-    }
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
   }
 
-  @keyframes spin-slow {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  .animate-shimmer {
+    animation: shimmer 2.5s infinite linear;
   }
-
-  /* Animation Classes */
-  .animate-scroll {
-    animation: scroll 40s linear infinite;
+  
+  .animate-scroll-x {
+    animation: scroll-x 20s linear infinite;
   }
-
-  .animate-scroll:hover {
+  
+  .animate-scroll-x:hover {
     animation-play-state: paused;
   }
 
-  .animate-float-rotate {
-    animation: float-rotate 4s ease-in-out infinite;
+  /* Box shadow for buttons (similar to what was in previous tailwind config) */
+  .shadow-button {
+    box-shadow: 0 4px 0 0 rgba(163, 116, 21, 0.4);
   }
-
-  .animate-bounce-slow {
-    animation: bounce-slow 4s ease-in-out infinite;
-  }
-
-  .animate-pulse-fade {
-    animation: pulse-fade 3s ease-in-out infinite;
-  }
-
-  .animate-float-disappear {
-    animation: float-disappear 4s ease-in-out infinite;
-  }
-
-  .animate-spin-slow {
-    animation: spin-slow 20s linear infinite;
+  
+  .shadow-button-hover {
+    box-shadow: 0 6px 0 0 rgba(163, 116, 21, 0.4);
   }
 }

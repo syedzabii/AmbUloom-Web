@@ -107,16 +107,16 @@ export default function TeacherRegisterPage() {
   const router = useRouter();
 
   const handleSpecializationToggle = (specId: string) => {
-    setSelectedSpecializations(prev => 
-      prev.includes(specId) 
+    setSelectedSpecializations(prev =>
+      prev.includes(specId)
         ? prev.filter(id => id !== specId)
         : [...prev, specId]
     );
   };
 
   const handleLanguageToggle = (langId: string) => {
-    setSelectedLanguages(prev => 
-      prev.includes(langId) 
+    setSelectedLanguages(prev =>
+      prev.includes(langId)
         ? prev.filter(id => id !== langId)
         : [...prev, langId]
     );
@@ -149,20 +149,20 @@ export default function TeacherRegisterPage() {
       // Send form data to the backend API
       const response = await apiClient.post("/teacher/register", formData);
 
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         // Handle successful registration
-        
+
         // Store teacher name for the success page
         const teacherName = formData.firstName;
         localStorage.setItem("teacherName", teacherName);
-        
+
         router.push("/success-teacher"); // Redirect to the teacher success page
       } else {
         // Handle unexpected response
         console.error("Unexpected response:", response);
         throw new Error("Registration failed");
       }
-      
+
     } catch (error) {
       console.error("Teacher registration error:", error);
       alert("Registration failed. Please try again.");
@@ -189,7 +189,7 @@ export default function TeacherRegisterPage() {
                 <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-primary mr-2" />
                 <span className="text-xs sm:text-sm font-medium text-primary">Join Our Teaching Team</span>
               </div>
-              
+
               <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-primary mb-4 sm:mb-6 leading-tight">
                 Share Your
                 <span className="block bg-gradient-to-r from-secondary to-accent-blue bg-clip-text text-transparent">
@@ -198,7 +198,7 @@ export default function TeacherRegisterPage() {
               </h1>
 
               <p className="text-sm sm:text-base lg:text-lg text-text-secondary max-w-2xl mt-4 sm:mt-8">
-                Become part of our esteemed teaching community. Inspire students worldwide 
+                Become part of our esteemed teaching community. Inspire students worldwide
                 with your expertise in Islamic education and Quranic studies.
               </p>
             </div>
@@ -206,89 +206,78 @@ export default function TeacherRegisterPage() {
             {/* Mobile Stats - Visible on mobile, hidden on desktop */}
             <div className="grid grid-cols-3 gap-4 mb-8 lg:hidden">
               <div className="text-center bg-white/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4">
-                <div className="text-lg sm:text-xl font-bold text-primary mb-1">50+</div>
+                <div className="text-lg sm:text-xl font-bold text-primary mb-1">10+</div>
                 <div className="text-xs sm:text-sm text-text-secondary">Expert Teachers</div>
               </div>
               <div className="text-center bg-white/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4">
-                <div className="text-lg sm:text-xl font-bold text-secondary mb-1">1000+</div>
+                <div className="text-lg sm:text-xl font-bold text-secondary mb-1">400+</div>
                 <div className="text-xs sm:text-sm text-text-secondary">Students Taught</div>
               </div>
               <div className="text-center bg-white/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4">
-                <div className="text-lg sm:text-xl font-bold text-accent-blue mb-1">4.9★</div>
-                <div className="text-xs sm:text-sm text-text-secondary">Average Rating</div>
+                <div className="text-lg sm:text-xl font-bold text-accent-blue mb-1">5+</div>
+                <div className="text-xs sm:text-sm text-text-secondary">Countries</div>
               </div>
             </div>
 
-            {/* Animated Illustration - Desktop Only */}
-            <div className="relative hidden lg:block mt-12">
-              <div className="relative w-full h-80 flex items-center justify-center">
-                {/* Central Element */}
-                <div className="relative z-10">
-                  <div className="w-32 h-32 bg-gradient-to-r from-secondary to-accent-blue rounded-3xl shadow-2xl flex items-center justify-center animate-pulse">
-                    <GraduationCap className="w-16 h-16 text-white" />
+            {/* Clean Feature Showcase Card - Desktop Only */}
+            <div className="hidden lg:block mt-8">
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-primary/15 shadow-xl space-y-6">
+                <div className="flex items-center space-x-4 pb-6 border-b border-primary/10">
+                  <div className="w-14 h-14 bg-primary text-gold rounded-2xl flex items-center justify-center shadow-md">
+                    <GraduationCap className="w-7 h-7 text-gold" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-primary font-display">Why Teach With Us?</h3>
+                    <p className="text-xs text-text-secondary">Join an esteemed global faculty</p>
                   </div>
                 </div>
-                
-                {/* Orbiting Specialization Cards */}
-                <div className="absolute inset-0 animate-spin" style={{ animationDuration: '25s' }}>
-                  {specializations.map((spec, index) => (
-                    <div
-                      key={spec.id}
-                      className="absolute"
-                      style={{
-                        top: specializationPositions[index].top,
-                        left: specializationPositions[index].left,
-                      }}
-                    >
-                      <div className={`w-16 h-16 ${spec.bgColor} rounded-2xl shadow-lg flex items-center justify-center border-2 border-white/20 backdrop-blur-sm`}>
-                        <spec.icon className={`w-8 h-8 ${spec.color}`} />
-                      </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mt-0.5 flex-shrink-0 font-bold text-xs">
+                      ✓
                     </div>
-                  ))}
-                </div>
-                
-                {/* Background Decorative Dots */}
-                <div className="absolute inset-0 overflow-hidden">
-                  {[...Array(6)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-2 h-2 bg-secondary/20 rounded-full animate-bounce"
-                      style={{
-                        top: `${20 + (i * 15)}%`,
-                        left: `${10 + (i * 12)}%`,
-                        animationDelay: `${i * 0.5}s`,
-                        animationDuration: '3s'
-                      }}
-                    />
-                  ))}
-                  {[...Array(6)].map((_, i) => (
-                    <div
-                      key={i + 6}
-                      className="absolute w-2 h-2 bg-accent-blue/20 rounded-full animate-bounce"
-                      style={{
-                        top: `${30 + (i * 12)}%`,
-                        right: `${15 + (i * 10)}%`,
-                        animationDelay: `${i * 0.7}s`,
-                        animationDuration: '3s'
-                      }}
-                    />
-                  ))}
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary">Global Student Reach</h4>
+                      <p className="text-xs text-text-secondary">Teach dedicated students from Dubia, UK, USA, Kuwait and worldwide.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mt-0.5 flex-shrink-0 font-bold text-xs">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary">Flexible Teaching Hours</h4>
+                      <p className="text-xs text-text-secondary">Set your availability according to your daily schedule and convenience.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mt-0.5 flex-shrink-0 font-bold text-xs">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary">Structured Curriculum & Support</h4>
+                      <p className="text-xs text-text-secondary">Comprehensive teaching materials, student management, and admin assistance.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Desktop Stats */}
-              <div className="grid grid-cols-3 gap-6 mt-12">
+              <div className="grid grid-cols-3 gap-6 mt-6 p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-primary/15 shadow-sm">
                 <div className="text-center">
-                  <div className="text-display-md font-bold text-primary mb-1">50+</div>
-                  <div className="text-body-sm text-text-secondary">Expert Teachers</div>
+                  <div className="text-2xl font-bold text-primary font-display">10+</div>
+                  <div className="text-xs text-text-secondary">Expert Teachers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-display-md font-bold text-secondary mb-1">1000+</div>
-                  <div className="text-body-sm text-text-secondary">Students Taught</div>
+                  <div className="text-2xl font-bold text-secondary font-display">4s00+</div>
+                  <div className="text-xs text-text-secondary">Students Taught</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-display-md font-bold text-accent-blue mb-1">4.9★</div>
-                  <div className="text-body-sm text-text-secondary">Average Rating</div>
+                  <div className="text-2xl font-bold text-accent-blue font-display">5+</div>
+                  <div className="text-xs text-text-secondary">Countries</div>
                 </div>
               </div>
             </div>
@@ -452,24 +441,22 @@ export default function TeacherRegisterPage() {
                         onClick={() => handleSpecializationToggle(spec.id)}
                         className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 text-left
                                   transform active:scale-95 sm:hover:scale-105 sm:hover:shadow-lg group
-                                  ${
-                                    selectedSpecializations.includes(spec.id)
-                                      ? `${spec.bgColor} shadow-lg border-transparent`
-                                      : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
-                                  }`}
+                                  ${selectedSpecializations.includes(spec.id)
+                            ? `${spec.bgColor} shadow-lg border-transparent`
+                            : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
+                          }`}
                       >
                         <div className="flex items-center space-x-3">
                           <div className={`w-10 sm:w-12 h-10 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0
-                                        ${selectedSpecializations.includes(spec.id) 
-                                          ? `bg-gradient-to-r ${spec.color}` 
-                                          : 'bg-primary/10 group-active:bg-primary/20 sm:group-hover:bg-primary/20'
-                                        } transition-all duration-300`}>
+                                        ${selectedSpecializations.includes(spec.id)
+                              ? `bg-gradient-to-r ${spec.color}`
+                              : 'bg-primary/10 group-active:bg-primary/20 sm:group-hover:bg-primary/20'
+                            } transition-all duration-300`}>
                             <spec.icon
-                              className={`w-5 sm:w-6 h-5 sm:h-6 ${
-                                selectedSpecializations.includes(spec.id)
-                                  ? "text-white"
-                                  : "text-primary"
-                              }`}
+                              className={`w-5 sm:w-6 h-5 sm:h-6 ${selectedSpecializations.includes(spec.id)
+                                ? "text-white"
+                                : "text-primary"
+                                }`}
                             />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -506,15 +493,13 @@ export default function TeacherRegisterPage() {
                         onClick={() => handleLanguageToggle(lang.id)}
                         className={`p-2 sm:p-3 rounded-xl border-2 transition-all duration-300 text-center
                                   transform active:scale-95 sm:hover:scale-105 sm:hover:shadow-lg
-                                  ${
-                                    selectedLanguages.includes(lang.id)
-                                      ? "bg-secondary/10 border-secondary shadow-lg"
-                                      : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
-                                  }`}
+                                  ${selectedLanguages.includes(lang.id)
+                            ? "bg-secondary/10 border-secondary shadow-lg"
+                            : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
+                          }`}
                       >
-                        <span className={`text-xs sm:text-sm font-medium ${
-                          selectedLanguages.includes(lang.id) ? "text-secondary" : "text-primary"
-                        }`}>
+                        <span className={`text-xs sm:text-sm font-medium ${selectedLanguages.includes(lang.id) ? "text-secondary" : "text-primary"
+                          }`}>
                           {lang.name}
                         </span>
                       </button>

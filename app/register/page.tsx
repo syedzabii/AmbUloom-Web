@@ -22,7 +22,8 @@ import { apiClient } from "@/services/api-client";
 interface RegisterFormData {
   firstName: string;
   lastName: string;
-  email: string;
+  email?: string;
+  phone: string;
   age: number;
   gender: string;
   course: string;
@@ -77,12 +78,12 @@ export default function RegisterPage() {
   const setCookie = async () => {
     try {
       const response = await fetch("/api/register", { method: "POST" });
-      
+
       if (!response.ok) {
         console.error("Failed to set cookie:", response.statusText);
         return;
       }
-      
+
       // Read the response to ensure the request completes
       await response.json();
     } catch (error) {
@@ -98,32 +99,38 @@ export default function RegisterPage() {
       const form = formRef.current;
       if (!form) return;
 
-      const formData: RegisterFormData = {
-        firstName: (form.elements.namedItem("firstName") as HTMLInputElement)
-          .value,
-        lastName: (form.elements.namedItem("lastName") as HTMLInputElement)
-          .value,
-        email: (form.elements.namedItem("email") as HTMLInputElement).value,
-        age: parseInt(
-          (form.elements.namedItem("age") as HTMLInputElement).value
-        ),
-        gender: (form.elements.namedItem("gender") as HTMLSelectElement).value,
-        course: selectedCourse,
-        remarks: (form.elements.namedItem("remarks") as HTMLTextAreaElement)
-          .value,
-        termsAccepted: true,
+      const firstName = (form.elements.namedItem("firstName") as HTMLInputElement).value;
+      const lastName = (form.elements.namedItem("lastName") as HTMLInputElement).value;
+      const rawGender = (form.elements.namedItem("gender") as HTMLSelectElement).value;
+      const gender = rawGender ? rawGender.charAt(0).toUpperCase() + rawGender.slice(1) : "Male";
+      const emailVal = (form.elements.namedItem("email") as HTMLInputElement).value;
+      const phoneVal = (form.elements.namedItem("phone") as HTMLInputElement).value;
+      const ageVal = parseInt((form.elements.namedItem("age") as HTMLInputElement).value);
+      const remarksVal = (form.elements.namedItem("remarks") as HTMLTextAreaElement)?.value || "";
+      const selectedCourseTitle = courses.find((c) => c.id === selectedCourse)?.title || selectedCourse;
+
+      const studentPayload = {
+        studentName: `${firstName} ${lastName}`.trim(),
+        email: emailVal || undefined,
+        phoneNumber: phoneVal,
+        age: ageVal,
+        gender: gender,
+        education: selectedCourseTitle + (remarksVal ? ` (${remarksVal})` : ""),
+        parentName: `${firstName}'s Guardian`,
+        city: "Online",
+        country: "Global",
       };
 
-      // Send form data to the backend API
-      const response = await apiClient.post("/applicant/register", formData);
+      // Send form data to the updated student registration endpoint
+      const response = await apiClient.post("/student/register", studentPayload);
 
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         // Handle successful registration
         await setCookie(); // Set cookie if needed
         // Store student name for success page
-        localStorage.setItem("studentName", `${formData.firstName} ${formData.lastName}`);
-        // Redirect based on age (same logic as admission form)
-        router.push(formData.age > 17 ? "/success" : "/success-kids");
+        localStorage.setItem("studentName", `${firstName} ${lastName}`.trim());
+        // Redirect based on age
+        router.push(ageVal > 17 ? "/success" : "/success-kids");
       } else {
         // Handle unexpected response
         console.error("Unexpected response:", response);
@@ -131,7 +138,6 @@ export default function RegisterPage() {
       }
     } catch (error) {
       console.error("Registration error:", error);
-      // Handle error (show error message, etc.)
       alert("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
@@ -147,7 +153,7 @@ export default function RegisterPage() {
         <div className="absolute bottom-40 left-1/4 w-40 h-40 bg-accent-blue rounded-full blur-3xl"></div>
       </div>
 
-     
+
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-20">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
@@ -158,7 +164,7 @@ export default function RegisterPage() {
                 <Sparkles className="w-5 h-5 text-primary mr-2" />
                 <span className="text-body-sm font-medium text-primary">Start Your Journey Today</span>
               </div>
-              
+
               <h1 className="title-hero text-primary mb-6 leading-tight">
                 Transform Your
                 <span className="block bg-gradient-to-r from-secondary to-accent-blue bg-clip-text text-transparent">
@@ -168,91 +174,94 @@ export default function RegisterPage() {
 
 
               {/* Stats */}
-             
+
             </div>
 
-            {/* Animated Illustration */}
-            <div className="relative hidden lg:block mt-12">
-              <div className="relative w-full h-80 flex items-center justify-center">
-                {/* Central Element */}
-                <div className="relative z-10">
-                  <div className="w-32 h-32 bg-gradient-to-r from-primary to-secondary rounded-3xl shadow-2xl flex items-center justify-center animate-pulse">
-                    <BookOpen className="w-16 h-16 text-white" />
+            {/* Clean Feature Showcase Card */}
+            <div className="hidden lg:block mt-8">
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-primary/15 shadow-xl space-y-6">
+                <div className="flex items-center space-x-4 pb-6 border-b border-primary/10">
+                  <div className="w-14 h-14 bg-primary text-gold rounded-2xl flex items-center justify-center shadow-md">
+                    <BookOpen className="w-7 h-7 text-gold" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-primary font-display">Why Learn With Us?</h3>
+                    <p className="text-xs text-text-secondary">Structured online Quranic education</p>
                   </div>
                 </div>
-                
-                {/* Orbiting Course Cards */}
-                <div className="absolute inset-0 animate-spin" style={{ animationDuration: '20s' }}>
-                  {courses.map((course, index) => (
-                    <div
-                      key={course.id}
-                      className="absolute"
-                      style={{
-                        top: coursePositions[index].top,
-                        left: coursePositions[index].left,
-                      }}
-                    >
-                      <div className={`w-16 h-16 ${course.bgColor} rounded-2xl shadow-lg flex items-center justify-center border-2 border-white/20 backdrop-blur-sm`}>
-                        <course.icon className={`w-8 h-8 ${course.color}`} />
-                      </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mt-0.5 flex-shrink-0 font-bold text-xs">
+                      ✓
                     </div>
-                  ))}
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary">1-on-1 Personalized Classes</h4>
+                      <p className="text-xs text-text-secondary">Individual attention tailored to your pace and learning goals.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mt-0.5 flex-shrink-0 font-bold text-xs">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary">Qualified Male & Female Teachers</h4>
+                      <p className="text-xs text-text-secondary">Experienced Huffaz and Ulama with fluent multilingual instruction.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mt-0.5 flex-shrink-0 font-bold text-xs">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary">Flexible Schedule & Free Trial</h4>
+                      <p className="text-xs text-text-secondary">Choose class times that fit your daily routine from anywhere.</p>
+                    </div>
+                  </div>
                 </div>
-                
-                {/* Background Decorative Dots */}
-                <div className="absolute inset-0 overflow-hidden">
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-2 h-2 bg-primary/20 rounded-full animate-bounce"
-                    style={{
-                      top: `${20 + (i * 15)}%`,
-                      left: `${10 + (i * 12)}%`,
-                      animationDelay: `${i * 0.5}s`,
-                      animationDuration: '3s'
-                    }}
-                  />
-                ))}
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i + 6}
-                    className="absolute w-2 h-2 bg-secondary/20 rounded-full animate-bounce"
-                    style={{
-                      top: `${30 + (i * 12)}%`,
-                      right: `${15 + (i * 10)}%`,
-                      animationDelay: `${i * 0.7}s`,
-                      animationDuration: '3s'
-                    }}
-                  />
-                ))}
-              </div>
               </div>
 
-            <div className="grid grid-cols-3 gap-6 mt-40">
+              {/* Stats Strip */}
+              <div className="grid grid-cols-3 gap-6 mt-6 p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-primary/15 shadow-sm">
                 <div className="text-center">
-                  <div className="text-display-md font-bold text-primary mb-1">1000+</div>
-                  <div className="text-body-sm text-text-secondary">Active Students</div>
+                  <div className="text-2xl font-bold text-primary font-display">400+</div>
+                  <div className="text-xs text-text-secondary">Active Students</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-display-md font-bold text-secondary mb-1">50+</div>
-                  <div className="text-body-sm text-text-secondary">Expert Teachers</div>
+                  <div className="text-2xl font-bold text-secondary font-display">10+</div>
+                  <div className="text-xs text-text-secondary">Expert Teachers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-display-md font-bold text-accent-blue mb-1">24/7</div>
-                  <div className="text-body-sm text-text-secondary">Support</div>
+                  <div className="text-2xl font-bold text-accent-blue font-display">5+</div>
+                  <div className="text-xs text-text-secondary">Countries</div>
                 </div>
               </div>
             </div>
 
-              <p className="text-body-xl text-text-secondary max-w-2xl mt-8">
-                Join thousands of students in their journey to master Islamic knowledge. 
-                Choose your path and begin learning with expert guidance.
-              </p>
-      </div>
+            <p className="text-body-lg text-text-secondary max-w-2xl mt-6">
+              Join students worldwide in mastering Quranic recitation, Tajweed, and Islamic studies with expert guidance.
+            </p>
+          </div>
 
           {/* Form Section */}
           <div className="relative">
             <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+              {/* Teacher Application Banner */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/5 rounded-2xl border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                <div className="text-center sm:text-left">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-secondary block">Are you a Quran Teacher?</span>
+                  <h4 className="text-sm font-bold text-primary">Join Our Global Teaching Staff</h4>
+                </div>
+                <Link
+                  href="/register-teacher"
+                  className="px-4 py-2 bg-secondary text-white hover:bg-secondary-dark text-xs font-bold rounded-xl shadow transition-all duration-200 shrink-0 transform hover:scale-105"
+                >
+                  Apply as a Teacher →
+                </Link>
+              </div>
+
               <div className="text-center mb-8">
                 <h2 className="text-display-lg text-primary mb-2">Join Our Community</h2>
                 <p className="text-body-md text-text-secondary">Fill out the form below to begin your learning journey</p>
@@ -291,20 +300,36 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* Email */}
-                <div className="space-y-2">
-                  <label className="text-body-sm font-semibold text-primary">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    placeholder="your.email@example.com"
-                    className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
-                             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                             transition-all duration-200 placeholder:text-text-tertiary"
-                  />
+                {/* Email & Phone Number */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-body-sm font-semibold text-primary flex items-center justify-between">
+                      <span>Email Address</span>
+                      <span className="text-xs font-normal text-text-secondary bg-primary/10 px-2 py-0.5 rounded-full">Optional</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="your.email@example.com (optional)"
+                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
+                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
+                               transition-all duration-200 placeholder:text-text-tertiary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-body-sm font-semibold text-primary">
+                      Phone / WhatsApp Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      placeholder="+91 98765 43210"
+                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
+                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
+                               transition-all duration-200 placeholder:text-text-tertiary"
+                    />
+                  </div>
                 </div>
 
                 {/* Age & Gender */}
@@ -357,24 +382,22 @@ export default function RegisterPage() {
                         onClick={() => setSelectedCourse(course.id)}
                         className={`relative p-6 rounded-2xl border-2 transition-all duration-300 text-left
                                   transform hover:scale-105 hover:shadow-lg group
-                                  ${
-                                    selectedCourse === course.id
-                                      ? `${course.bgColor} shadow-lg scale-105`
-                                      : "border-primary/10 bg-white/30 hover:border-primary/30"
-                                  }`}
+                                  ${selectedCourse === course.id
+                            ? `${course.bgColor} shadow-lg scale-105`
+                            : "border-primary/10 bg-white/30 hover:border-primary/30"
+                          }`}
                       >
                         <div className="flex items-center space-x-4">
                           <div className={`w-16 h-16 rounded-2xl flex items-center justify-center
-                                        ${selectedCourse === course.id 
-                                          ? `bg-gradient-to-r ${course.color}` 
-                                          : 'bg-primary/10 group-hover:bg-primary/20'
-                                        } transition-all duration-300`}>
+                                        ${selectedCourse === course.id
+                              ? `bg-gradient-to-r ${course.color}`
+                              : 'bg-primary/10 group-hover:bg-primary/20'
+                            } transition-all duration-300`}>
                             <course.icon
-                              className={`w-8 h-8 ${
-                                selectedCourse === course.id
-                                  ? "text-white"
-                                  : "text-primary"
-                              }`}
+                              className={`w-8 h-8 ${selectedCourse === course.id
+                                ? "text-white"
+                                : "text-primary"
+                                }`}
                             />
                           </div>
                           <div className="flex-1">

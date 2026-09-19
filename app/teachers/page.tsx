@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { 
-  GraduationCap, 
-  Award, 
-  Users, 
-  Clock, 
-  Mail, 
+import {
+  GraduationCap,
+  Award,
+  Users,
+  Clock,
+  Mail,
   Star,
   BookOpen,
   Heart,
@@ -53,10 +54,10 @@ const teachers: Teacher[] = [
   {
     id: 3,
     name: "Hazrat Hafiz Muhammad Altamash",
-    title: "Head of Kids Department",
+    title: "Multi Language Specialist",
     qualifications: ["Hafiz", "Kids Specialist"],
     experience: "4 Years of Experience",
-    languages: ["Urdu", "Tamil", "Basic English"],
+    languages: ["Urdu", "Tamil", "Expert English"],
     bio: "Expert in nurturing young children in their early Qur'anic journey. Specializes in making learning fun and engaging for kids.",
     specialFeatures: ["Kids Specialist", "Early Education"]
   },
@@ -169,9 +170,9 @@ export default function TeachersPage() {
 
   const filteredTeachers = activeFilter
     ? teachers.filter((teacher) =>
-        teacher.languages.includes(activeFilter) || 
-        teacher.qualifications.some(q => q.toLowerCase().includes(activeFilter.toLowerCase()))
-      )
+      teacher.languages.includes(activeFilter) ||
+      teacher.qualifications.some(q => q.toLowerCase().includes(activeFilter.toLowerCase()))
+    )
     : teachers;
 
   return (
@@ -186,24 +187,24 @@ export default function TeachersPage() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
-                         {/* <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full mb-6">
+            {/* <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full mb-6">
                <Sparkles className="w-5 h-5 text-primary mr-2" />
                <span className="text-body-sm font-medium text-primary">Our Esteemed Staff</span>
              </div> */}
-             
-             <h1 className="text-4xl py-4 lg:text-5xl font-bold text-primary mb-6 leading-tight">
-               Meet Our
-               <span className="block text-secondary">
-                 Expert Teachers
-               </span>
-             </h1>
-            
+
+            <h1 className="text-4xl py-4 lg:text-5xl font-bold text-primary mb-6 leading-tight">
+              Meet Our
+              <span className="block text-secondary">
+                Expert Teachers
+              </span>
+            </h1>
+
             <p className="text-xl text-text-secondary leading-relaxed mb-8">
               At <strong>AMBAA UL ULOOM</strong>, we are proud of our team of <strong>Ulama, Huffaz, Quraa, and expert teachers</strong> who guide students with love, sincerity, and discipline. With fluency in multiple languages and strong spiritual backgrounds, our teachers are the heart of our mission.
             </p>
 
-                         {/* Language Coverage */}
-             <div className="bg-white rounded-2xl p-6 border border-primary/20 shadow-xl">
+            {/* Language Coverage */}
+            <div className="bg-white rounded-2xl p-6 border border-primary/20 shadow-xl">
               <h3 className="text-lg font-semibold text-primary mb-4 flex items-center justify-center">
                 <Globe className="w-5 h-5 mr-2" />
                 Languages Covered by Our Staff
@@ -225,6 +226,17 @@ export default function TeachersPage() {
 
       {/* Filters */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        {/* Join as a Teacher CTA Callout */}
+        <div className="mb-8 text-center">
+          <Link
+            href="/register-teacher"
+            className="inline-flex items-center px-6 py-3 bg-secondary text-white hover:bg-secondary-dark rounded-2xl font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+          >
+            <Sparkles className="w-4 h-4 mr-2 text-gold-light" />
+            Are you a Teacher? Apply to Join Our Faculty →
+          </Link>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -234,11 +246,10 @@ export default function TeachersPage() {
           <button
             onClick={() => setActiveFilter(null)}
             className={`px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 transform hover:scale-105
-                      ${
-                        !activeFilter
-                          ? "bg-secondary text-white shadow-lg"
-                          : "bg-white text-primary border-2 border-primary/20 hover:border-primary/40"
-                      }`}
+                      ${!activeFilter
+                ? "bg-secondary text-white shadow-lg"
+                : "bg-white text-primary border-2 border-primary/20 hover:border-primary/40"
+              }`}
           >
             All Teachers
           </button>
@@ -248,11 +259,10 @@ export default function TeachersPage() {
               key={language}
               onClick={() => setActiveFilter(language)}
               className={`px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 transform hover:scale-105
-                        ${
-                          activeFilter === language
-                            ? "bg-secondary text-white shadow-lg"
-                            : "bg-white text-primary border-2 border-primary/20 hover:border-primary/40"
-                        }`}
+                        ${activeFilter === language
+                  ? "bg-secondary text-white shadow-lg"
+                  : "bg-white text-primary border-2 border-primary/20 hover:border-primary/40"
+                }`}
             >
               {language}
             </button>
@@ -272,31 +282,30 @@ export default function TeachersPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 * index }}
-                             className={`group relative bg-white rounded-3xl shadow-xl border border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
-                 teacher.isFounder ? 'ring-2 ring-secondary/30' : ''
-               }`}
+              className={`group relative bg-white rounded-3xl shadow-xl border border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${teacher.isFounder ? 'ring-2 ring-secondary/30' : ''
+                }`}
             >
               {/* Founder Badge */}
               {teacher.isFounder && (
                 <div className="absolute top-4 right-4 z-10">
-                                   <div className="bg-secondary text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                   ✨ Founder
-                 </div>
+                  <div className="bg-secondary text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                    ✨ Founder
+                  </div>
                 </div>
               )}
 
-                             {/* Header */}
-               <div className="bg-primary/5 p-6 border-b border-primary/10">
-                 <div className="flex items-center justify-center mb-4">
-                   <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center shadow-lg">
-                     <GraduationCap className="w-10 h-10 text-white" />
-                   </div>
-                 </div>
-                
+              {/* Header */}
+              <div className="bg-primary/5 p-6 border-b border-primary/10">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center shadow-lg">
+                    <GraduationCap className="w-10 h-10 text-white" />
+                  </div>
+                </div>
+
                 <h3 className="text-xl font-bold text-primary text-center mb-2">
                   {teacher.name}
                 </h3>
-                
+
                 <p className="text-secondary font-semibold text-center mb-3">
                   {teacher.title}
                 </p>
@@ -391,7 +400,7 @@ export default function TeachersPage() {
             animate={{ opacity: 1 }}
             className="text-center py-16"
           >
-                         <div className="bg-white rounded-3xl p-8 border border-primary/20 shadow-xl max-w-md mx-auto">
+            <div className="bg-white rounded-3xl p-8 border border-primary/20 shadow-xl max-w-md mx-auto">
               <BookOpen className="w-16 h-16 text-primary mx-auto mb-4 opacity-50" />
               <h3 className="text-xl font-semibold text-primary mb-2">No Teachers Found</h3>
               <p className="text-text-secondary mb-6">
@@ -399,7 +408,7 @@ export default function TeachersPage() {
               </p>
               <button
                 onClick={() => setActiveFilter(null)}
-                                 className="px-6 py-3 bg-secondary text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                className="px-6 py-3 bg-secondary text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 View All Teachers
               </button>

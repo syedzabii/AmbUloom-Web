@@ -1,155 +1,308 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { GraduationCap, Award, Users, Clock, Phone, Mail } from "lucide-react";
+import { 
+  Phone, 
+  MessageCircle, 
+  CheckCircle, 
+  Clock, 
+  Sparkles, 
+  ArrowRight, 
+  Home,
+  GraduationCap
+} from "lucide-react";
+
+interface ParticleData {
+  width: number;
+  height: number;
+  left: string;
+  top: string;
+  background: string;
+  x: number;
+  y: number;
+  duration: number;
+  delay: number;
+  repeatDelay: number;
+}
 
 export default function TeacherSuccessPage() {
-  const [teacherName, setTeacherName] = useState("");
   const router = useRouter();
+  const [teacherName, setTeacherName] = useState("");
+  const [particles, setParticles] = useState<ParticleData[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const phoneNumber = "+91 82963 31365";
+  const rawPhoneNumber = "918296331365";
 
   useEffect(() => {
+    setIsMounted(true);
     const name = localStorage?.getItem?.("teacherName") || "Teacher";
     setTeacherName(name);
+
+    const colors = [
+      "#C8972A",
+      "#164529",
+      "#22c55e",
+      "#10b981",
+      "#3b82f6",
+    ];
+
+    const particleData: ParticleData[] = Array.from({ length: 24 }).map((_, i) => ({
+      width: 8 + Math.random() * 16,
+      height: 8 + Math.random() * 16,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      background: colors[i % colors.length],
+      x: Math.sin(i) * 120 + Math.random() * 40,
+      y: Math.cos(i) * 120 + Math.random() * 40,
+      duration: 4 + Math.random() * 3,
+      delay: Math.random() * 2,
+      repeatDelay: Math.random() * 2,
+    }));
+
+    setParticles(particleData);
   }, []);
 
-  const handleReturnHome = () => {
-    router.push("/");
+  const handlePhoneClick = () => {
+    window.open(`tel:${phoneNumber.replace(/\s/g, '')}`, '_self');
   };
 
+  const handleWhatsAppClick = () => {
+    const message = `Assalamu Alaikum! My name is ${teacherName !== "Teacher" ? teacherName : "a teacher applicant"}. I just submitted my teacher application on AMBAA UL ULOOM and would like to confirm my application status.`;
+    const whatsappUrl = `https://wa.me/${rawPhoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const particleVariants = {
+    initial: { opacity: 0, scale: 0 },
+    animate: (particle: ParticleData) => ({
+      opacity: [0, 0.8, 0],
+      scale: [0, 1, 0],
+      x: particle.x,
+      y: particle.y,
+      rotate: [0, 360],
+      transition: {
+        duration: particle.duration,
+        delay: particle.delay,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatDelay: particle.repeatDelay,
+      },
+    }),
+  };
+
+  const checkmarkVariants = {
+    hidden: { pathLength: 0 },
+    visible: {
+      pathLength: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  const nextSteps = [
+    {
+      title: "Credential Assessment",
+      description: "Our academic committee reviews your qualifications, certifications, and teaching history.",
+    },
+    {
+      title: "Brief Interview Call",
+      description: "A quick discussion to align on your preferred teaching schedule, languages, and courses.",
+    },
+    {
+      title: "Faculty Onboarding",
+      description: "Access our online curriculum resources, guidelines, and student coordination portal.",
+    },
+    {
+      title: "Start Teaching",
+      description: "Begin inspiring global students through interactive 1-on-1 Quranic sessions!",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary/5 flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-primary-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden flex items-center justify-center">
+      {/* Background ambient decorative shapes */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Floating particles */}
+      {isMounted &&
+        particles.map((particle, i) => (
+          <motion.div
+            key={`particle-${i}`}
+            custom={particle}
+            variants={particleVariants}
+            initial="initial"
+            animate="animate"
+            className="absolute rounded-full pointer-events-none z-0 opacity-60"
+            style={{
+              width: particle.width,
+              height: particle.height,
+              left: particle.left,
+              top: particle.top,
+              background: particle.background,
+            }}
+          />
+        ))}
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-2xl w-full"
+        transition={{ duration: 0.8 }}
+        className="max-w-3xl w-full relative z-10 my-8"
       >
-        {/* Main content card */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-          {/* Header with icon */}
-          <div className="bg-gradient-to-r from-secondary to-accent-blue px-8 py-6">
-            <div className="flex items-center justify-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center"
-              >
-                <GraduationCap className="w-8 h-8 text-white" />
-              </motion.div>
-            </div>
-            
+        <div className="bg-white rounded-3xl shadow-2xl border border-primary/20 overflow-hidden">
+          {/* Top Banner / Header */}
+          <div className="bg-gradient-to-r from-primary via-[#113a23] to-secondary px-8 py-10 text-center relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10 pattern-islamic pointer-events-none" />
+
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 18,
+                delay: 0.2,
+              }}
+              className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-4 border border-white/30 shadow-inner"
+            >
+              <svg className="w-10 h-10 text-white" viewBox="0 0 24 24">
+                <motion.path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                  variants={checkmarkVariants}
+                  initial="hidden"
+                  animate="visible"
+                />
+              </svg>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-center mt-4"
             >
-              <h1 className="text-2xl font-bold text-white">
+              <span className="inline-flex items-center px-4 py-1.5 bg-gold/20 text-gold-light border border-gold/30 rounded-full text-xs font-semibold tracking-wide uppercase mb-3">
+                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-gold" />
+                Teacher Application Submitted
+              </span>
+              <h1 className="text-3xl sm:text-4xl font-bold font-display text-white mb-2">
                 Welcome, {teacherName}!
               </h1>
-              <p className="text-blue-100 mt-1">
-                Application submitted successfully
+              <p className="text-blue-100 text-sm sm:text-base max-w-lg mx-auto">
+                Thank you for applying to join AMBAA UL ULOOM's global teaching staff.
               </p>
             </motion.div>
           </div>
 
-          {/* Content */}
-          <div className="px-8 py-6">
-            {/* Success message */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-center mb-8"
-            >
-                             <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                 <svg className="w-6 h-6 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                   <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/>
-                 </svg>
-               </div>
-               <p className="text-text-secondary leading-relaxed">
-                Thank you for your interest in joining AMBAA UL ULOOM. Our team will review your application within 2-3 business days and send you an email notification.
-              </p>
-            </motion.div>
-
-            {/* Next steps */}
+          {/* Main Body Content */}
+          <div className="p-6 sm:p-10 space-y-8">
+            {/* Direct Contact Callout Box */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="mb-8"
+              transition={{ delay: 0.5 }}
+              className="bg-primary-50 rounded-2xl p-6 sm:p-8 border border-primary/15 text-center shadow-sm"
             >
-                             <h3 className="text-lg font-semibold text-primary mb-4 text-center">
-                 What's Next?
-               </h3>
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                 <div className="text-center">
-                   <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-2">
-                     <Award className="w-5 h-5 text-secondary" />
-                   </div>
-                   <h4 className="font-medium text-primary text-sm">Review</h4>
-                   <p className="text-xs text-text-secondary">Qualification assessment</p>
-                 </div>
-                 <div className="text-center">
-                   <div className="w-10 h-10 bg-accent-blue/10 rounded-lg flex items-center justify-center mx-auto mb-2">
-                     <Users className="w-5 h-5 text-accent-blue" />
-                   </div>
-                   <h4 className="font-medium text-primary text-sm">Interview</h4>
-                   <p className="text-xs text-text-secondary">Brief discussion</p>
-                 </div>
-                 <div className="text-center">
-                   <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-2">
-                     <Clock className="w-5 h-5 text-primary" />
-                   </div>
-                   <h4 className="font-medium text-primary text-sm">Onboarding</h4>
-                   <p className="text-xs text-text-secondary">Training & setup</p>
-                 </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-primary mb-2">
+                Connect With Our Faculty Desk
+              </h2>
+              <p className="text-text-secondary text-sm sm:text-base mb-6 max-w-xl mx-auto leading-relaxed">
+                Have questions regarding your application or teaching schedule? Call us or reach out on WhatsApp to connect directly with our admin team.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                {/* Phone Button */}
+                <button
+                  onClick={handlePhoneClick}
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-primary text-white rounded-2xl font-bold text-lg shadow-lg hover:bg-primary-dark transition-all duration-300 transform hover:scale-105 active:scale-95"
+                >
+                  <Phone className="w-6 h-6 mr-3 text-gold" />
+                  Call {phoneNumber}
+                </button>
+
+                {/* WhatsApp Button */}
+                <button
+                  onClick={handleWhatsAppClick}
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105 active:scale-95"
+                >
+                  <MessageCircle className="w-6 h-6 mr-3" />
+                  WhatsApp Us
+                </button>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 text-xs font-medium text-text-secondary mt-5">
+                <Clock className="w-4 h-4 text-secondary" />
+                <span>Available Daily: 9:00 AM – 9:00 PM IST</span>
               </div>
             </motion.div>
 
-            {/* Contact info */}
-                         <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ delay: 1.0 }}
-               className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-4 mb-6 border border-primary/20"
-             >
-               <h4 className="text-sm font-semibold text-primary mb-3 text-center">
-                 Contact Us
-               </h4>
-               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-text-secondary">
-                 <div className="flex items-center">
-                   <Phone className="w-4 h-4 text-secondary mr-2" />
-                   <span>+91 918383838</span>
-                 </div>
-                 <div className="flex items-center">
-                   <Mail className="w-4 h-4 text-secondary mr-2" />
-                   <span>teachers@ambuloom.com</span>
-                 </div>
-               </div>
-             </motion.div>
+            {/* Next Steps */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              <h3 className="text-lg font-bold text-primary mb-4 flex items-center justify-center sm:justify-start">
+                <CheckCircle className="w-5 h-5 text-secondary mr-2" />
+                What Happens Next?
+              </h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {nextSteps.map((step, index) => (
+                  <div 
+                    key={index}
+                    className="p-4 bg-white rounded-xl border border-primary/10 shadow-sm hover:border-primary/30 transition-all"
+                  >
+                    <div className="flex items-start">
+                      <div className="w-7 h-7 rounded-full bg-secondary/10 text-secondary text-xs font-bold flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                        0{index + 1}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-primary text-sm mb-1">{step.title}</h4>
+                        <p className="text-xs text-text-secondary leading-relaxed">{step.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
 
-            {/* Return button */}
+            {/* Navigation Action Buttons */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="text-center"
+              transition={{ delay: 0.9 }}
+              className="pt-4 border-t border-primary/10 flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
-                             <motion.button
-                 onClick={handleReturnHome}
-                 className="px-6 py-3 bg-gradient-to-r from-secondary to-accent-blue text-white rounded-2xl font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300"
-                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(139, 92, 246, 0.3)" }}
-                 whileTap={{ scale: 0.98 }}
-               >
-                 Return to Home
-               </motion.button>
+              <Link
+                href="/"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-primary/10 text-primary rounded-xl font-semibold hover:bg-primary/20 transition-all text-sm"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Return to Home
+              </Link>
+              <Link
+                href="/teachers"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-white text-secondary border border-secondary/30 rounded-xl font-semibold hover:bg-secondary/5 transition-all text-sm"
+              >
+                <GraduationCap className="w-4 h-4 mr-2" />
+                Meet Our Faculty
+                <ArrowRight className="w-4 h-4 ml-1.5" />
+              </Link>
             </motion.div>
           </div>
         </div>
       </motion.div>
     </div>
   );
-}
+}

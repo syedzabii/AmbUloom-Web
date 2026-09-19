@@ -9,84 +9,58 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand colors inspired by Ambaa Ul Uloom
-        primary: {
-          DEFAULT: "#1A572A", // Deep green from logo
-          light: "#236B37", // Lighter shade
-          dark: "#124019", // Darker shade
-          50: "#E8F5EB",
-          100: "#D1EBD7",
-          200: "#A3D7AF",
-          300: "#75C387",
-          400: "#47AF5F",
-          500: "#1A572A",
-          600: "#154623",
-          700: "#10341B",
-          800: "#0B2312",
-          900: "#051109",
-        },
-        // Secondary colors inspired by Duolingo's vibrant palette
-        secondary: {
-          DEFAULT: "#58CC02", // Duolingo's signature green
-          light: "#7DD644",
-          dark: "#45A001",
-        },
-        // Accent colors for highlights and CTAs
-        accent: {
-          blue: "#1CB0F6", // Duolingo's blue
-          orange: "#FF9600", // Warm accent
-          yellow: "#FFD900", // Highlight color
-        },
-        // Background colors
         background: {
-          primary: "#FFFFFF",
-          secondary: "#F7F7F7",
-          tertiary: "#E5E5E5",
+          DEFAULT: "#FAFAF7", // warm off-white
+          dark: "#0D2B1A", // deep forest green
         },
-        // Text colors
+        primary: {
+          50: "#F2F7F4", // soft green tint background
+          100: "#E2ECE5",
+          200: "#C5D9CB",
+          DEFAULT: "#0D2B1A", // deep forest green - Islamic
+          dark: "#081B10", // deeper emerald
+          light: "#164529",
+        },
+        secondary: {
+          DEFAULT: "#164529", // deep emerald green for high contrast & elegance
+          dark: "#0D2B1A",
+          light: "#225C37",
+        },
+        gold: {
+          DEFAULT: "#C8972A", // warm gold
+          light: "#D4A946",
+          dark: "#B38520",
+        },
+        accent: {
+          blue: "#2563EB",
+          "blue-light": "#EFF6FF",
+          green: "#10B981",
+          "green-light": "#ECFDF5",
+        },
         text: {
-          primary: "#333333",
-          secondary: "#666666",
-          tertiary: "#999999",
+          primary: "#1A1A1A",
+          secondary: "#4A5568", // slate grey secondary text
+          muted: "#6B7280",
           inverse: "#FFFFFF",
         },
-        // Status colors
-        status: {
-          success: "#58CC02",
-          error: "#FF4B4B",
-          warning: "#FFC800",
-          info: "#1CB0F6",
+        border: {
+          gold: "rgba(200, 151, 42, 0.2)",
         },
       },
-      // Add border radius for that modern 3D look
-      borderRadius: {
-        xl: "1rem",
-        "2xl": "1.5rem",
-        "3xl": "2rem",
-      },
-      // Box shadow for 3D effect
-      boxShadow: {
-        button: "0 4px 0 0 rgba(0, 0, 0, 0.2)",
-        "button-hover": "0 6px 0 0 rgba(0, 0, 0, 0.2)",
-        card: "0 8px 16px rgba(0, 0, 0, 0.1)",
-      },
       fontFamily: {
-        jakarta: ["var(--font-plus-jakarta)"],
-        inter: ["var(--font-inter)"],
+        display: ["var(--font-cormorant)", "serif"],
+        body: ["var(--font-inter)", "sans-serif"],
+        accent: ["var(--font-amiri)", "serif"],
       },
-      // Add font size utilities inspired by Duolingo
-      fontSize: {
-        "display-2xl": ["4.5rem", { lineHeight: "1.1", fontWeight: "700" }],
-        "display-xl": ["3.75rem", { lineHeight: "1.1", fontWeight: "700" }],
-        "display-lg": ["3rem", { lineHeight: "1.1", fontWeight: "700" }],
-        "display-md": ["2.25rem", { lineHeight: "1.2", fontWeight: "700" }],
-        "display-sm": ["1.875rem", { lineHeight: "1.2", fontWeight: "700" }],
-        "display-xs": ["1.5rem", { lineHeight: "1.2", fontWeight: "700" }],
-        "body-xl": ["1.25rem", { lineHeight: "1.5" }],
-        "body-lg": ["1.125rem", { lineHeight: "1.5" }],
-        "body-md": ["1rem", { lineHeight: "1.5" }],
-        "body-sm": ["0.875rem", { lineHeight: "1.5" }],
-        "body-xs": ["0.75rem", { lineHeight: "1.5" }],
+      boxShadow: {
+        glow: "0 0 40px rgba(200, 151, 42, 0.15)",
+        "glow-sm": "0 0 20px rgba(200, 151, 42, 0.15)",
+        card: "0 8px 30px rgba(0, 0, 0, 0.04)",
+        "card-hover": "0 20px 40px rgba(0, 0, 0, 0.08)",
+      },
+      backgroundImage: {
+        'gradient-gold': 'linear-gradient(to right, #b38520, #C8972A, #d4a946)',
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
     },
   },
