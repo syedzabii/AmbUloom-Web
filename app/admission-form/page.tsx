@@ -69,11 +69,11 @@ export default function AdmissionForm() {
         }
       }
 
-      const response = await apiClient.post("/student/new", formDataToSend, {
+      const response = await apiClient.post("/student/register", formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         localStorage.setItem("studentName", formData.studentName);
         toast.success("Student registered successfully!");
         router.push(parseInt(formData.age) > 17 ? "/success" : "/success-kids");
@@ -134,7 +134,7 @@ export default function AdmissionForm() {
               {/* Email */}
               <div>
                 <label className="block text-sm font-serif text-[#34495e] mb-1">
-                  Email
+                  Email <span className="text-xs text-gray-500 font-normal">(Optional)</span>
                 </label>
                 <input
                   type="email"
@@ -142,7 +142,6 @@ export default function AdmissionForm() {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
-                  required
                 />
               </div>
 
