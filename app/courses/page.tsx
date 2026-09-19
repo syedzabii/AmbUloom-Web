@@ -2,11 +2,11 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { 
-  BookOpen, 
-  Users, 
-  Monitor, 
-  GraduationCap, 
+import {
+  BookOpen,
+  Users,
+  Monitor,
+  GraduationCap,
   Globe,
   Award,
   Clock,
@@ -53,7 +53,7 @@ const courses: Course[] = [
   },
   {
     id: 2,
-    title: "Nazra Quran",
+    title: "Nazirah Quran",
     subtitle: "Quran Recitation",
     description: "Learn to read the Holy Quran with proper pronunciation and fluency. Develop beautiful recitation skills.",
     duration: "6-12 months",
@@ -203,16 +203,16 @@ const CoursesPage = () => {
               <Sparkles className="w-5 h-5 text-primary mr-2" />
               <span className="text-body-sm font-medium text-primary">Comprehensive Quranic Education</span>
             </div>
-            
+
             <h1 className="text-4xl lg:text-5xl font-bold text-primary mb-6 leading-tight">
               Explore Our
               <span className="block text-secondary">
                 Quranic Courses
               </span>
             </h1>
-            
+
             <p className="text-xl text-text-secondary leading-relaxed mb-8">
-              From foundational Noorani Qaida to advanced Hifz and Tafseer, we offer comprehensive Quranic education 
+              From foundational Noorani Qaida to advanced Hifz and Tafseer, we offer comprehensive Quranic education
               tailored for students of all ages and levels. Learn with expert teachers in a supportive environment.
             </p>
 
@@ -251,9 +251,8 @@ const CoursesPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 * index }}
-              className={`group relative bg-white rounded-3xl shadow-xl border border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
-                course.isPopular ? 'ring-2 ring-secondary/30' : ''
-              }`}
+              className={`group relative bg-white rounded-3xl shadow-xl border border-primary/20 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${course.isPopular ? 'ring-2 ring-secondary/30' : ''
+                }`}
             >
               {/* Popular Badge */}
               {course.isPopular && (
@@ -273,11 +272,11 @@ const CoursesPage = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <h3 className="text-xl font-bold text-primary text-center mb-2">
                   {course.title}
                 </h3>
-                
+
                 <p className="text-secondary font-semibold text-center mb-3">
                   {course.subtitle}
                 </p>
@@ -323,16 +322,7 @@ const CoursesPage = () => {
                   </div>
                 </div>
 
-                {/* CTA */}
-                <div className="flex items-center justify-center pt-4 border-t border-primary/10">
-                  <Link
-                    href={`/courses/${course.id}`}
-                    className="inline-flex items-center text-secondary hover:text-secondary-dark font-medium text-sm transition-colors"
-                  >
-                    Learn More
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
-                </div>
+
               </div>
             </motion.div>
           ))}
@@ -394,7 +384,7 @@ const CoursesPage = () => {
               Ready to Start Your Quranic Journey?
             </h2>
             <p className="text-lg text-text-secondary mb-8 max-w-2xl mx-auto">
-              Join our global community of 350+ students and transform your life through authentic Quranic education. 
+              Join our global community of 350+ students and transform your life through authentic Quranic education.
               Start with a free trial class today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
