@@ -94,9 +94,28 @@ export default function AdmissionForm() {
             <h1 className="text-3xl font-serif text-[#34495e] font-bold">
               AMBAA UL ULOOM
             </h1>
-            <h2 className="text-xl font-serif text-[#34495e] mt-2 italic">
-              Admission Form
+            <h2 className="text-xl font-serif text-[#34495e] mt-1 italic">
+              1-on-1 Classes Admission Form
             </h2>
+            <p className="text-xs text-[#556375] mt-1">
+              Personalized 1-on-1 Online Quran & Islamic Studies
+            </p>
+          </div>
+
+          {/* WhatsApp Callout for Hesitant Visitors */}
+          <div className="mb-6 p-4 bg-[#25D366]/10 border border-[#25D366]/40 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div>
+              <p className="text-xs font-bold text-[#128C7E]">💬 Hesitant to fill out the form?</p>
+              <p className="text-[11px] text-gray-600 mt-0.5">Skip the form & chat with us directly on WhatsApp to get started!</p>
+            </div>
+            <a
+              href="https://wa.me/918296331365?text=Hi%2C%20I%20am%20interested%20in%201-on-1%20Quran%20classes.%20Can%20you%20help%20me%20get%20started%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-semibold rounded-lg shadow-sm transition-all shrink-0 flex items-center gap-1.5"
+            >
+              <span>Chat us on WhatsApp</span>
+            </a>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">

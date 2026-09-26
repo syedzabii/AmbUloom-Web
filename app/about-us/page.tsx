@@ -92,7 +92,7 @@ export default function AboutUs() {
             >
               <div className="absolute inset-0 z-0 opacity-5 pattern-islamic animate-drift"></div>
               <div className="relative w-64 h-64 z-10 drop-shadow-2xl">
-                 <Image src="/images/ambaimage.png" alt="Ambaa Ul Uloom Heritage" fill className="object-contain" />
+                 <Image src="/images/Ambaimage.png" alt="Ambaa Ul Uloom Heritage" fill className="object-contain" />
               </div>
             </motion.div>
           </div>

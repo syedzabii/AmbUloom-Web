@@ -17,7 +17,7 @@ export default function Home() {
       <CoursesSection />
 
       {/* Social Proof / Trust */}
-      {/* <SocialProof /> */}
+      <SocialProof />
 
       {/* FAQ Accordion */}
       <FAQs />
