@@ -65,18 +65,18 @@ const BookCallPage = () => {
           >
             <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full mb-6">
               <Phone className="w-5 h-5 text-primary mr-2" />
-              <span className="text-body-sm font-medium text-primary">Get in Touch</span>
+              <span className="text-body-sm font-medium text-primary">✨ 1-on-1 Quran Classes • Get in Touch</span>
             </div>
             
             <h1 className="text-4xl lg:text-5xl font-bold text-primary mb-6 leading-tight">
               Ready to Start Your
               <span className="block text-secondary">
-                Quranic Journey?
+                1-on-1 Quranic Journey?
               </span>
             </h1>
             
             <p className="text-xl text-text-secondary leading-relaxed mb-8">
-              Contact us directly to discuss your Quran learning goals, course options, and get personalized guidance from our expert teachers.
+              Prefer chatting over filling out forms? Contact us directly on WhatsApp or phone to discuss your 1-on-1 class schedule and course options with our team.
             </p>
           </motion.div>
         </div>
