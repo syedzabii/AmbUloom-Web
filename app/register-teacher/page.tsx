@@ -16,10 +16,11 @@ import {
   Award,
   Clock,
   Globe,
+  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { apiClient } from "@/services/api-client";
+import { apiClient, parseApiError } from "@/services/api-client";
 
 // Define form data interface for teachers
 interface TeacherRegisterFormData {
@@ -52,32 +53,36 @@ const specializations = [
     title: "Noorani Qaida",
     description: "Teaching fundamentals",
     icon: BookOpen,
-    color: "text-primary",
-    bgColor: "bg-primary/10",
+    iconBg: "bg-primary text-white shadow-md",
+    cardActive: "border-primary bg-primary/10 shadow-lg scale-105",
+    badgeBg: "bg-primary text-white",
   },
   {
     id: "nazeera",
     title: "Nazeera",
     description: "Tajweed rules",
     icon: Users,
-    color: "text-secondary",
-    bgColor: "bg-secondary/10",
+    iconBg: "bg-secondary text-white shadow-md",
+    cardActive: "border-secondary bg-secondary/10 shadow-lg scale-105",
+    badgeBg: "bg-secondary text-white",
   },
   {
     id: "hifz",
     title: "Hifz",
     description: "Quran memorization",
     icon: GraduationCap,
-    color: "text-accent-blue",
-    bgColor: "bg-accent-blue/10",
+    iconBg: "bg-accent-blue text-white shadow-md",
+    cardActive: "border-accent-blue bg-accent-blue/10 shadow-lg scale-105",
+    badgeBg: "bg-accent-blue text-white",
   },
   {
     id: "tajweed",
     title: "Advanced Tajweed",
     description: "Advanced recitation",
     icon: Award,
-    color: "text-accent-green",
-    bgColor: "bg-accent-green/10",
+    iconBg: "bg-emerald-700 text-white shadow-md",
+    cardActive: "border-emerald-700 bg-emerald-50 shadow-lg scale-105",
+    badgeBg: "bg-emerald-700 text-white",
   },
 ];
 
@@ -103,6 +108,8 @@ export default function TeacherRegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSpecializations, setSelectedSpecializations] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [generalError, setGeneralError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
@@ -112,6 +119,13 @@ export default function TeacherRegisterPage() {
         ? prev.filter(id => id !== specId)
         : [...prev, specId]
     );
+    if (fieldErrors.specializations) {
+      setFieldErrors(prev => {
+        const next = { ...prev };
+        delete next.specializations;
+        return next;
+      });
+    }
   };
 
   const handleLanguageToggle = (langId: string) => {
@@ -120,11 +134,35 @@ export default function TeacherRegisterPage() {
         ? prev.filter(id => id !== langId)
         : [...prev, langId]
     );
+    if (fieldErrors.languages) {
+      setFieldErrors(prev => {
+        const next = { ...prev };
+        delete next.languages;
+        return next;
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setFieldErrors({});
+    setGeneralError(null);
+
+    const localErrors: Record<string, string> = {};
+    if (selectedSpecializations.length === 0) {
+      localErrors.specializations = "Please select at least one specialization.";
+    }
+    if (selectedLanguages.length === 0) {
+      localErrors.languages = "Please select at least one language.";
+    }
+
+    if (Object.keys(localErrors).length > 0) {
+      setFieldErrors(localErrors);
+      setGeneralError("Please complete all required fields below.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const form = formRef.current;
@@ -146,26 +184,25 @@ export default function TeacherRegisterPage() {
         termsAccepted: true,
       };
 
-      // Send form data to the backend API
       const response = await apiClient.post("/teacher/register", formData);
 
-      if (response.status === 201 || response.status === 200) {
-        // Handle successful registration
-
-        // Store teacher name for the success page
+      if ((response.status === 201 || response.status === 200) && response.data?.success !== false) {
         const teacherName = formData.firstName;
         localStorage.setItem("teacherName", teacherName);
-
-        router.push("/success-teacher"); // Redirect to the teacher success page
+        router.push("/success-teacher");
       } else {
-        // Handle unexpected response
-        console.error("Unexpected response:", response);
-        throw new Error("Registration failed");
+        throw new Error(response.data?.message || "Registration failed");
       }
-
-    } catch (error) {
+    } catch (error: any) {
       console.error("Teacher registration error:", error);
-      alert("Registration failed. Please try again.");
+      const parsed = parseApiError(error);
+      setGeneralError(parsed.generalError);
+      setFieldErrors(parsed.fieldErrors);
+
+      // Smoothly scroll form into view so user sees error banner
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     } finally {
       setIsLoading(false);
     }
@@ -206,11 +243,11 @@ export default function TeacherRegisterPage() {
             {/* Mobile Stats - Visible on mobile, hidden on desktop */}
             <div className="grid grid-cols-3 gap-4 mb-8 lg:hidden">
               <div className="text-center bg-white/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4">
-                <div className="text-lg sm:text-xl font-bold text-primary mb-1">10+</div>
+                <div className="text-lg sm:text-xl font-bold text-primary mb-1">20+</div>
                 <div className="text-xs sm:text-sm text-text-secondary">Expert Teachers</div>
               </div>
               <div className="text-center bg-white/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4">
-                <div className="text-lg sm:text-xl font-bold text-secondary mb-1">400+</div>
+                <div className="text-lg sm:text-xl font-bold text-secondary mb-1">40+</div>
                 <div className="text-xs sm:text-sm text-text-secondary">Students Taught</div>
               </div>
               <div className="text-center bg-white/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4">
@@ -268,11 +305,11 @@ export default function TeacherRegisterPage() {
               {/* Desktop Stats */}
               <div className="grid grid-cols-3 gap-6 mt-6 p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-primary/15 shadow-sm">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary font-display">10+</div>
+                  <div className="text-2xl font-bold text-primary font-display">20+</div>
                   <div className="text-xs text-text-secondary">Expert Teachers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-secondary font-display">4s00+</div>
+                  <div className="text-2xl font-bold text-secondary font-display">400+</div>
                   <div className="text-xs text-text-secondary">Students Taught</div>
                 </div>
                 <div className="text-center">
@@ -292,6 +329,16 @@ export default function TeacherRegisterPage() {
               </div>
 
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                {/* General Error Alert Banner */}
+                {generalError && (
+                  <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start gap-3 text-red-800 shadow-sm animate-fade-in">
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                    <div className="text-sm font-medium leading-relaxed">
+                      {generalError}
+                    </div>
+                  </div>
+                )}
+
                 {/* Name Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
@@ -303,10 +350,18 @@ export default function TeacherRegisterPage() {
                       name="firstName"
                       required
                       placeholder="Enter your first name"
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base ${fieldErrors.firstName
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.firstName && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.firstName}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-primary">
@@ -317,10 +372,18 @@ export default function TeacherRegisterPage() {
                       name="lastName"
                       required
                       placeholder="Enter your last name"
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base ${fieldErrors.lastName
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.lastName && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.lastName}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -335,10 +398,18 @@ export default function TeacherRegisterPage() {
                       name="email"
                       required
                       placeholder="your.email@example.com"
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base ${fieldErrors.email
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.email && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.email}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-primary">
@@ -349,10 +420,18 @@ export default function TeacherRegisterPage() {
                       name="phone"
                       required
                       placeholder="+1 (555) 123-4567"
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base ${fieldErrors.phone || fieldErrors.phoneNumber
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {(fieldErrors.phone || fieldErrors.phoneNumber) && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.phone || fieldErrors.phoneNumber}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -369,10 +448,18 @@ export default function TeacherRegisterPage() {
                       max="100"
                       required
                       placeholder="Your age"
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base ${fieldErrors.age
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.age && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.age}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-primary">
@@ -381,15 +468,23 @@ export default function TeacherRegisterPage() {
                     <select
                       name="gender"
                       required
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 text-text-primary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 text-text-primary text-sm sm:text-base ${fieldErrors.gender
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     >
                       <option value="" className="text-text-tertiary">Select your gender</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                       <option value="other">Other</option>
                     </select>
+                    {fieldErrors.gender && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.gender}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -404,10 +499,18 @@ export default function TeacherRegisterPage() {
                       name="qualification"
                       required
                       placeholder="e.g., Hafiz, Qari, Islamic Studies Degree"
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary text-sm sm:text-base ${fieldErrors.qualification
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.qualification && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.qualification}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-primary">
@@ -416,15 +519,23 @@ export default function TeacherRegisterPage() {
                     <select
                       name="experience"
                       required
-                      className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 text-text-primary text-sm sm:text-base"
+                      className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 text-text-primary text-sm sm:text-base ${fieldErrors.experience
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     >
                       <option value="" className="text-text-tertiary">Select experience level</option>
                       {experienceLevels.map(level => (
                         <option key={level.id} value={level.id}>{level.name}</option>
                       ))}
                     </select>
+                    {fieldErrors.experience && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.experience}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -433,6 +544,12 @@ export default function TeacherRegisterPage() {
                   <label className="block text-sm font-semibold text-primary">
                     Specializations (Select all that apply)
                   </label>
+                  {fieldErrors.specializations && (
+                    <p className="text-xs text-red-500 flex items-center gap-1 font-medium">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      {fieldErrors.specializations}
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 gap-3">
                     {specializations.map((spec) => (
                       <button
@@ -443,21 +560,18 @@ export default function TeacherRegisterPage() {
                                   transform active:scale-95 sm:hover:scale-105 sm:hover:shadow-lg group
                                   ${selectedSpecializations.includes(spec.id)
                             ? `${spec.bgColor} shadow-lg border-transparent`
-                            : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
+                            : fieldErrors.specializations
+                              ? "border-red-300 bg-white/30"
+                              : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
                           }`}
                       >
                         <div className="flex items-center space-x-3">
                           <div className={`w-10 sm:w-12 h-10 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0
                                         ${selectedSpecializations.includes(spec.id)
-                              ? `bg-gradient-to-r ${spec.color}`
-                              : 'bg-primary/10 group-active:bg-primary/20 sm:group-hover:bg-primary/20'
+                              ? spec.iconBg
+                              : 'bg-primary/10 text-primary group-active:bg-primary/20 sm:group-hover:bg-primary/20'
                             } transition-all duration-300`}>
-                            <spec.icon
-                              className={`w-5 sm:w-6 h-5 sm:h-6 ${selectedSpecializations.includes(spec.id)
-                                ? "text-white"
-                                : "text-primary"
-                                }`}
-                            />
+                            <spec.icon className="w-5 sm:w-6 h-5 sm:h-6" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm sm:text-base font-bold text-primary mb-1 truncate">
@@ -485,6 +599,12 @@ export default function TeacherRegisterPage() {
                   <label className="block text-sm font-semibold text-primary">
                     Languages You Can Teach In (Select all that apply)
                   </label>
+                  {fieldErrors.languages && (
+                    <p className="text-xs text-red-500 flex items-center gap-1 font-medium">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      {fieldErrors.languages}
+                    </p>
+                  )}
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                     {languages.map((lang) => (
                       <button
@@ -495,7 +615,9 @@ export default function TeacherRegisterPage() {
                                   transform active:scale-95 sm:hover:scale-105 sm:hover:shadow-lg
                                   ${selectedLanguages.includes(lang.id)
                             ? "bg-secondary/10 border-secondary shadow-lg"
-                            : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
+                            : fieldErrors.languages
+                              ? "border-red-300 bg-white/30"
+                              : "border-primary/10 bg-white/30 active:border-primary/50 sm:hover:border-primary/30"
                           }`}
                       >
                         <span className={`text-xs sm:text-sm font-medium ${selectedLanguages.includes(lang.id) ? "text-secondary" : "text-primary"
@@ -515,9 +637,11 @@ export default function TeacherRegisterPage() {
                   <select
                     name="availability"
                     required
-                    className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                             transition-all duration-200 text-text-primary text-sm sm:text-base"
+                    className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                             focus:outline-none focus:ring-2 transition-all duration-200 text-text-primary text-sm sm:text-base ${fieldErrors.availability
+                        ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                        : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                      }`}
                   >
                     <option value="" className="text-text-tertiary">Select your availability</option>
                     <option value="full-time">Full Time</option>
@@ -526,6 +650,12 @@ export default function TeacherRegisterPage() {
                     <option value="evenings">Evenings Only</option>
                     <option value="flexible">Flexible Schedule</option>
                   </select>
+                  {fieldErrors.availability && (
+                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      {fieldErrors.availability}
+                    </p>
+                  )}
                 </div>
 
                 {/* Bio */}
@@ -537,14 +667,28 @@ export default function TeacherRegisterPage() {
                     name="bio"
                     required
                     placeholder="Tell us about your teaching experience, philosophy, and what makes you unique as a teacher..."
-                    className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 border-primary/20 rounded-xl sm:rounded-2xl 
-                             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                             transition-all duration-200 placeholder:text-text-tertiary resize-none text-sm sm:text-base"
+                    className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/50 border-2 rounded-xl sm:rounded-2xl 
+                             focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary resize-none text-sm sm:text-base ${fieldErrors.bio
+                        ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                        : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                      }`}
                     rows={4}
                   />
+                  {fieldErrors.bio && (
+                    <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      {fieldErrors.bio}
+                    </p>
+                  )}
                 </div>
 
                 {/* Submit Button */}
+                {generalError && (
+                  <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-center gap-3 text-red-800 shadow-sm">
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+                    <span className="text-sm font-medium">{generalError}</span>
+                  </div>
+                )}
                 <button
                   type="submit"
                   disabled={isLoading || selectedSpecializations.length === 0 || selectedLanguages.length === 0}

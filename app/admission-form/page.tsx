@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { apiClient } from "@/services/api-client";
+import { apiClient, parseApiError } from "@/services/api-client";
 import Image from "next/image";
 
 export default function AdmissionForm() {
@@ -11,6 +11,7 @@ export default function AdmissionForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     studentName: "",
     age: "",
@@ -29,6 +30,13 @@ export default function AdmissionForm() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[name];
+        return copy;
+      });
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +64,7 @@ export default function AdmissionForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setFieldErrors({});
 
     try {
       const formDataToSend = new FormData();
@@ -73,17 +82,27 @@ export default function AdmissionForm() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response.status === 201 || response.status === 200) {
+      if ((response.status === 201 || response.status === 200) && response.data?.success !== false) {
         localStorage.setItem("studentName", formData.studentName);
         toast.success("Student registered successfully!");
         router.push(parseInt(formData.age) > 17 ? "/success" : "/success-kids");
+      } else {
+        throw new Error(response.data?.message || "Registration failed");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
-      toast.error("Failed to register student. Please try again.");
+      const parsed = parseApiError(error);
+      if (parsed.generalError) {
+        toast.error(parsed.generalError);
+      }
+      setFieldErrors(parsed.fieldErrors);
+
+      // Smooth scroll into view
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsLoading(false);
     }
+
   };
 
   return (
@@ -95,10 +114,10 @@ export default function AdmissionForm() {
               AMBAA UL ULOOM
             </h1>
             <h2 className="text-xl font-serif text-[#34495e] mt-1 italic">
-              1-on-1 Classes Admission Form
+              <span className="font-sans not-italic font-bold text-[0.92em]">1-on-1</span> Classes Admission Form
             </h2>
             <p className="text-xs text-[#556375] mt-1">
-              Personalized 1-on-1 Online Quran & Islamic Studies
+              Personalized <span className="font-sans font-bold text-[0.92em]">1-on-1</span> Online Quran & Islamic Studies
             </p>
           </div>
 
@@ -130,9 +149,14 @@ export default function AdmissionForm() {
                   name="studentName"
                   value={formData.studentName}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.studentName ? "border-red-500" : "border-[#34495e]"
+                  }`}
                   required
                 />
+                {fieldErrors.studentName && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.studentName}</p>
+                )}
               </div>
 
               {/* Age */}
@@ -145,9 +169,14 @@ export default function AdmissionForm() {
                   name="age"
                   value={formData.age}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.age ? "border-red-500" : "border-[#34495e]"
+                  }`}
                   required
                 />
+                {fieldErrors.age && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.age}</p>
+                )}
               </div>
 
               {/* Email */}
@@ -160,8 +189,13 @@ export default function AdmissionForm() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.email ? "border-red-500" : "border-[#34495e]"
+                  }`}
                 />
+                {fieldErrors.email && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.email}</p>
+                )}
               </div>
 
               {/* Gender */}
@@ -173,7 +207,9 @@ export default function AdmissionForm() {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.gender ? "border-red-500" : "border-[#34495e]"
+                  }`}
                   required
                 >
                   <option value="">Select</option>
@@ -181,6 +217,9 @@ export default function AdmissionForm() {
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
+                {fieldErrors.gender && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.gender}</p>
+                )}
               </div>
 
               {/* Parent Name */}
@@ -193,9 +232,14 @@ export default function AdmissionForm() {
                   name="parentName"
                   value={formData.parentName}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.parentName ? "border-red-500" : "border-[#34495e]"
+                  }`}
                   required
                 />
+                {fieldErrors.parentName && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.parentName}</p>
+                )}
               </div>
 
               {/* Country */}
@@ -208,9 +252,14 @@ export default function AdmissionForm() {
                   name="country"
                   value={formData.country}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.country ? "border-red-500" : "border-[#34495e]"
+                  }`}
                   required
                 />
+                {fieldErrors.country && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.country}</p>
+                )}
               </div>
 
               {/* City */}
@@ -223,9 +272,14 @@ export default function AdmissionForm() {
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.city ? "border-red-500" : "border-[#34495e]"
+                  }`}
                   required
                 />
+                {fieldErrors.city && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.city}</p>
+                )}
               </div>
 
               {/* Phone Number */}
@@ -238,9 +292,14 @@ export default function AdmissionForm() {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  className="w-full p-2 border-b border-[#34495e] bg-transparent focus:outline-none"
+                  className={`w-full p-2 border-b bg-transparent focus:outline-none ${
+                    fieldErrors.phoneNumber || fieldErrors.phone ? "border-red-500" : "border-[#34495e]"
+                  }`}
                   required
                 />
+                {(fieldErrors.phoneNumber || fieldErrors.phone) && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.phoneNumber || fieldErrors.phone}</p>
+                )}
               </div>
             </div>
 
