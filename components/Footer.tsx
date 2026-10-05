@@ -22,9 +22,9 @@ export default function Footer() {
 
   return (
     <footer className="bg-primary-dark text-white relative overflow-hidden border-t-4 border-gold">
-       {/* Background pattern */}
-       <div className="absolute inset-0 opacity-5 pattern-islamic pointer-events-none"></div>
-       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-5 pattern-islamic pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <motion.div
@@ -42,12 +42,12 @@ export default function Footer() {
             <p className="text-white/70 leading-relaxed text-sm">
               A premium online madrasa bridging traditional scholarship with modern learning. Learn Quran online with expert teachers anytime, anywhere.
             </p>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               <SocialLink href="#" icon={<Facebook size={18} />} />
               <SocialLink href="#" icon={<Twitter size={18} />} />
               <SocialLink href="#" icon={<Instagram size={18} />} />
               <SocialLink href="#" icon={<Youtube size={18} />} />
-            </div>
+            </div> */}
           </motion.div>
 
           {/* Quick Links */}
@@ -92,10 +92,10 @@ export default function Footer() {
                 <span>13, Bore Bank Rd, Byadarahalli, Benson Town, Bengaluru, Karnataka 560046</span>
               </li>
             </ul>
-            
-            <a 
-              href="https://wa.me/918296331365" 
-              target="_blank" 
+
+            <a
+              href="https://wa.me/918296331365"
+              target="_blank"
               rel="noopener noreferrer"
               className="mt-6 inline-flex items-center justify-center w-full px-6 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold rounded-xl shadow-lg hover:-translate-y-0.5 transition-all duration-200"
             >
@@ -107,17 +107,17 @@ export default function Footer() {
 
         {/* Copyright */}
         <motion.div
-           initial={{ opacity: 0 }}
-           whileInView={{ opacity: 1 }}
-           viewport={{ once: true }}
-           className="border-t border-white/10 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between text-white/50 text-sm"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="border-t border-white/10 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between text-white/50 text-sm"
         >
           <p>
             &copy; {new Date().getFullYear()} AMBAA UL ULOOM. All rights reserved.
           </p>
           <div className="flex items-center gap-2 mt-4 md:mt-0">
-             <span>Designed thoughtfully for global learners.</span>
-             <Star className="w-3 h-3 text-gold fill-gold" />
+            <span>Designed thoughtfully for global learners.</span>
+            <Star className="w-3 h-3 text-gold fill-gold" />
           </div>
         </motion.div>
       </div>

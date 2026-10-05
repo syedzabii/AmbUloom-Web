@@ -224,11 +224,11 @@ const CoursesPage = () => {
                   <div className="text-text-secondary">Specialized Courses</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-secondary mb-2">13</div>
+                  <div className="text-3xl font-bold text-secondary mb-2">20+</div>
                   <div className="text-text-secondary">Expert Teachers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-accent-blue mb-2">350+</div>
+                  <div className="text-3xl font-bold text-accent-blue mb-2">400+</div>
                   <div className="text-text-secondary">Students Worldwide</div>
                 </div>
               </div>
@@ -316,7 +316,7 @@ const CoursesPage = () => {
                     ))}
                     {course.features.length > 4 && (
                       <div className="text-xs text-secondary font-medium">
-                        +{course.features.length - 4} more features
+                        +{course.features.length - 4} more skills
                       </div>
                     )}
                   </div>
@@ -384,7 +384,7 @@ const CoursesPage = () => {
               Ready to Start Your Quranic Journey?
             </h2>
             <p className="text-lg text-text-secondary mb-8 max-w-2xl mx-auto">
-              Join our global community of 350+ students and transform your life through authentic Quranic education.
+              Join our global community of 400+ students and transform your life through authentic Quranic education.
               Start with a free trial class today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
