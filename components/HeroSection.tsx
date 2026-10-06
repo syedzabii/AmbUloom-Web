@@ -83,15 +83,17 @@ export default function HeroSection() {
             {/* Badge */}
             <motion.div variants={itemVariants} className="self-start">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C8972A] bg-[rgba(200,151,42,0.08)] mb-6 shadow-sm">
-                <Star className="w-3.5 h-3.5 text-[#C8972A] fill-[#C8972A]" />
-                <span className="text-sm font-semibold text-[#1A2E1A]">✨ 1-on-1 Live Online Quran Classes • 400+ Students</span>
+                {/* <Star className="w-3.5 h-3.5 text-[#C8972A] fill-[#C8972A]" /> */}
+                <span className="text-sm font-semibold text-[#1A2E1A]">✨ 1-on-1 Live Online Quran Classes</span>
               </div>
             </motion.div>
 
             {/* Headline */}
             <motion.h1 variants={itemVariants} className="flex flex-col font-display font-bold text-[44px] sm:text-[48px] md:text-[64px] leading-[1.1] mb-6">
               <span className="text-[#1A2E1A]">Learn the Quran.</span>
-              <span className="text-[#C8972A]">1-on-1 Personal Tutor.</span>
+              <span className="text-[#C8972A]">
+                <span className="font-sans font-bold text-[0.92em]">1-on-1</span> Personal Tutor.
+              </span>
               <span className="block mt-6 w-[80px] h-[2px] bg-[#C8972A] rounded-full"></span>
             </motion.h1>
 
@@ -165,7 +167,7 @@ export default function HeroSection() {
 
               <div className="flex flex-col">
                 <span className="font-display font-bold text-[36px] text-[#C8972A] leading-none mb-1">
-                  <Counter end={10} />+
+                  <Counter end={20} />+
                 </span>
                 <span className="font-body text-[13px] text-[#4A5568] font-medium">Teachers</span>
               </div>

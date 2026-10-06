@@ -13,10 +13,11 @@ import {
   Star,
   Heart,
   Zap,
+  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { apiClient } from "@/services/api-client";
+import { apiClient, parseApiError } from "@/services/api-client";
 
 // Define form data interface
 interface RegisterFormData {
@@ -31,8 +32,6 @@ interface RegisterFormData {
   termsAccepted: boolean;
 }
 
-
-
 // Pre-calculated positions for orbiting course cards to avoid hydration mismatches
 const coursePositions = [
   { top: "40%", left: "65%" },   // index 0: 0 degrees
@@ -46,54 +45,43 @@ const courses = [
     title: "Noorani Qaida",
     description: "Master the fundamentals",
     icon: BookOpen,
-    color: "text-primary",
-    bgColor: "bg-primary/10",
+    iconBg: "bg-primary text-white shadow-md",
+    cardActive: "border-primary bg-primary/10 shadow-lg scale-105",
+    badgeBg: "bg-primary text-white",
   },
   {
     id: "nazeera",
     title: "Nazeera",
     description: "Learn Tajweed rules",
     icon: Users,
-    color: "text-secondary",
-    bgColor: "bg-secondary/10",
+    iconBg: "bg-secondary text-white shadow-md",
+    cardActive: "border-secondary bg-secondary/10 shadow-lg scale-105",
+    badgeBg: "bg-secondary text-white",
   },
   {
     id: "hifz",
     title: "Hifz",
     description: "Memorize the Quran",
     icon: GraduationCap,
-    color: "text-accent-blue",
-    bgColor: "bg-accent-blue/10",
+    iconBg: "bg-accent-blue text-white shadow-md",
+    cardActive: "border-accent-blue bg-accent-blue/10 shadow-lg scale-105",
+    badgeBg: "bg-accent-blue text-white",
   },
 ];
-
-
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [generalError, setGeneralError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-
-  const setCookie = async () => {
-    try {
-      const response = await fetch("/api/register", { method: "POST" });
-
-      if (!response.ok) {
-        console.error("Failed to set cookie:", response.statusText);
-        return;
-      }
-
-      // Read the response to ensure the request completes
-      await response.json();
-    } catch (error) {
-      console.error("Error setting cookie:", error);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setFieldErrors({});
+    setGeneralError(null);
 
     try {
       const form = formRef.current;
@@ -109,6 +97,13 @@ export default function RegisterPage() {
       const remarksVal = (form.elements.namedItem("remarks") as HTMLTextAreaElement)?.value || "";
       const selectedCourseTitle = courses.find((c) => c.id === selectedCourse)?.title || selectedCourse;
 
+      if (!selectedCourse) {
+        setFieldErrors({ course: "Please select a learning path course." });
+        setGeneralError("Please select a course to complete your registration.");
+        setIsLoading(false);
+        return;
+      }
+
       const studentPayload = {
         studentName: `${firstName} ${lastName}`.trim(),
         email: emailVal || undefined,
@@ -121,27 +116,37 @@ export default function RegisterPage() {
         country: "Global",
       };
 
-      // Send form data to the updated student registration endpoint
       const response = await apiClient.post("/student/register", studentPayload);
 
-      if (response.status === 201 || response.status === 200) {
-        // Handle successful registration
-        await setCookie(); // Set cookie if needed
-        // Store student name for success page
+      if ((response.status === 201 || response.status === 200) && response.data?.success !== false) {
         localStorage.setItem("studentName", `${firstName} ${lastName}`.trim());
-        // Redirect based on age
         router.push(ageVal > 17 ? "/success" : "/success-kids");
       } else {
-        // Handle unexpected response
-        console.error("Unexpected response:", response);
-        throw new Error("Registration failed");
+        throw new Error(response.data?.message || "Registration failed");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
-      alert("Registration failed. Please try again.");
+      const parsed = parseApiError(error);
+      setGeneralError(parsed.generalError);
+
+      const mapped: Record<string, string> = { ...parsed.fieldErrors };
+      if (parsed.fieldErrors.studentName) {
+        mapped.firstName = parsed.fieldErrors.studentName;
+        mapped.lastName = parsed.fieldErrors.studentName;
+      }
+      if (parsed.fieldErrors.phoneNumber) {
+        mapped.phone = parsed.fieldErrors.phoneNumber;
+      }
+      setFieldErrors(mapped);
+
+      // Smoothly scroll form into view so user sees the error notification
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     } finally {
       setIsLoading(false);
     }
+
   };
 
   return (
@@ -230,7 +235,7 @@ export default function RegisterPage() {
                   <div className="text-xs text-text-secondary">Active Students</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-secondary font-display">10+</div>
+                  <div className="text-2xl font-bold text-secondary font-display">20+</div>
                   <div className="text-xs text-text-secondary">Expert Teachers</div>
                 </div>
                 <div className="text-center">
@@ -286,11 +291,21 @@ export default function RegisterPage() {
               </div>
 
               <div className="text-center mb-8">
-                <h2 className="text-display-lg text-primary mb-2">Register for 1-on-1 Classes</h2>
+                <h2 className="text-display-lg text-primary mb-2">Register for <span className="font-sans font-bold text-[0.92em]">1-on-1</span> Classes</h2>
                 <p className="text-body-md text-text-secondary">Fill out the form below or chat on WhatsApp to begin your personalized learning journey</p>
               </div>
 
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+                {/* General Error Alert Banner */}
+                {generalError && (
+                  <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start gap-3 text-red-800 shadow-sm animate-fade-in">
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                    <div className="text-sm font-medium leading-relaxed">
+                      {generalError}
+                    </div>
+                  </div>
+                )}
+
                 {/* Name Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -302,10 +317,18 @@ export default function RegisterPage() {
                       name="firstName"
                       required
                       placeholder="Enter your first name"
-                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary"
+                      className={`w-full px-5 py-4 bg-white/50 border-2 rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary ${fieldErrors.firstName
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.firstName && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.firstName}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-body-sm font-semibold text-primary">
@@ -316,10 +339,18 @@ export default function RegisterPage() {
                       name="lastName"
                       required
                       placeholder="Enter your last name"
-                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary"
+                      className={`w-full px-5 py-4 bg-white/50 border-2 rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary ${fieldErrors.lastName
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.lastName && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.lastName}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -334,10 +365,18 @@ export default function RegisterPage() {
                       type="email"
                       name="email"
                       placeholder="your.email@example.com (optional)"
-                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary"
+                      className={`w-full px-5 py-4 bg-white/50 border-2 rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary ${fieldErrors.email
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.email && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.email}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-body-sm font-semibold text-primary">
@@ -348,10 +387,18 @@ export default function RegisterPage() {
                       name="phone"
                       required
                       placeholder="+91 98765 43210"
-                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary"
+                      className={`w-full px-5 py-4 bg-white/50 border-2 rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary ${fieldErrors.phone || fieldErrors.phoneNumber
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {(fieldErrors.phone || fieldErrors.phoneNumber) && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.phone || fieldErrors.phoneNumber}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -368,10 +415,18 @@ export default function RegisterPage() {
                       max="100"
                       required
                       placeholder="Your age"
-                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 placeholder:text-text-tertiary"
+                      className={`w-full px-5 py-4 bg-white/50 border-2 rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 placeholder:text-text-tertiary ${fieldErrors.age
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     />
+                    {fieldErrors.age && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.age}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-body-sm font-semibold text-primary">
@@ -380,15 +435,23 @@ export default function RegisterPage() {
                     <select
                       name="gender"
                       required
-                      className="w-full px-5 py-4 bg-white/50 border-2 border-primary/20 rounded-2xl 
-                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
-                               transition-all duration-200 text-text-primary"
+                      className={`w-full px-5 py-4 bg-white/50 border-2 rounded-2xl 
+                               focus:outline-none focus:ring-2 transition-all duration-200 text-text-primary ${fieldErrors.gender
+                          ? "border-red-500 focus:ring-red-200 focus:border-red-500"
+                          : "border-primary/20 focus:ring-primary/20 focus:border-primary"
+                        }`}
                     >
                       <option value="" className="text-text-tertiary">Select your gender</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                       <option value="other">Other</option>
                     </select>
+                    {fieldErrors.gender && (
+                      <p className="text-xs text-red-500 mt-1 flex items-center gap-1 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {fieldErrors.gender}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -397,31 +460,43 @@ export default function RegisterPage() {
                   <label className="text-body-sm font-semibold text-primary">
                     Choose Your Learning Path
                   </label>
+                  {fieldErrors.course && (
+                    <p className="text-xs text-red-500 flex items-center gap-1 font-medium">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      {fieldErrors.course}
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 gap-4">
                     {courses.map((course) => (
                       <button
                         key={course.id}
                         type="button"
-                        onClick={() => setSelectedCourse(course.id)}
+                        onClick={() => {
+                          setSelectedCourse(course.id);
+                          if (fieldErrors.course) {
+                            setFieldErrors((prev) => {
+                              const newErr = { ...prev };
+                              delete newErr.course;
+                              return newErr;
+                            });
+                          }
+                        }}
                         className={`relative p-6 rounded-2xl border-2 transition-all duration-300 text-left
                                   transform hover:scale-105 hover:shadow-lg group
                                   ${selectedCourse === course.id
                             ? `${course.bgColor} shadow-lg scale-105`
-                            : "border-primary/10 bg-white/30 hover:border-primary/30"
+                            : fieldErrors.course
+                              ? "border-red-300 bg-white/30 hover:border-red-400"
+                              : "border-primary/10 bg-white/30 hover:border-primary/30"
                           }`}
                       >
                         <div className="flex items-center space-x-4">
-                          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center
+                          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0
                                         ${selectedCourse === course.id
-                              ? `bg-gradient-to-r ${course.color}`
-                              : 'bg-primary/10 group-hover:bg-primary/20'
+                              ? course.iconBg
+                              : 'bg-primary/10 text-primary group-hover:bg-primary/20'
                             } transition-all duration-300`}>
-                            <course.icon
-                              className={`w-8 h-8 ${selectedCourse === course.id
-                                ? "text-white"
-                                : "text-primary"
-                                }`}
-                            />
+                            <course.icon className="w-8 h-8" />
                           </div>
                           <div className="flex-1">
                             <h3 className="text-body-lg font-bold text-primary mb-1">
@@ -433,8 +508,8 @@ export default function RegisterPage() {
                           </div>
                           {selectedCourse === course.id && (
                             <div className="absolute top-4 right-4">
-                              <div className="w-6 h-6 bg-secondary rounded-full flex items-center justify-center">
-                                <Check className="w-4 h-4 text-white" />
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${course.badgeBg}`}>
+                                <Check className="w-4 h-4" />
                               </div>
                             </div>
                           )}
@@ -460,6 +535,12 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Submit Button */}
+                {generalError && (
+                  <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-center gap-3 text-red-800 shadow-sm">
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+                    <span className="text-sm font-medium">{generalError}</span>
+                  </div>
+                )}
                 <button
                   type="submit"
                   disabled={isLoading || !selectedCourse}

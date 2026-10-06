@@ -71,7 +71,7 @@ const BookCallPage = () => {
             <h1 className="text-4xl lg:text-5xl font-bold text-primary mb-6 leading-tight">
               Ready to Start Your
               <span className="block text-secondary">
-                1-on-1 Quranic Journey?
+                <span className="font-sans font-bold text-[0.92em]">1-on-1</span> Quranic Journey?
               </span>
             </h1>
             

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import mascot from "../../public/images/mascot.png";
+import trophy from "../../public/images/trophy.png";
 import Image from "next/image";
 import { Phone, MessageCircle, Clock, Home, BookOpen, Sparkles, Star, Award, Heart, Rocket } from "lucide-react";
 import confetti from "canvas-confetti";
@@ -192,31 +192,31 @@ export default function SuccessKidsPage() {
 
           {/* Main Body Content */}
           <div className="p-6 sm:p-10 space-y-8">
-            {/* Animated Mascot Showcase */}
+            {/* Animated Trophy Showcase */}
             <motion.div
               variants={itemVariants}
-              className="relative mx-auto max-w-[210px] text-center"
+              className="relative mx-auto max-w-[240px] sm:max-w-[260px] text-center"
             >
               <motion.div
-                animate={{ y: [0, -10, 0], rotate: [0, 2, -2, 0] }}
+                animate={{ y: [0, -10, 0], rotate: [0, 1.5, -1.5, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="relative bg-primary-50 p-4 rounded-3xl border border-primary/20 shadow-sm"
+                className="relative bg-gradient-to-b from-primary-50 via-white to-primary-50 p-4 rounded-3xl border border-primary/20 shadow-md overflow-hidden"
               >
                 <Image
-                  src={mascot}
-                  alt="Mascot"
-                  width={160}
-                  height={160}
-                  className="rounded-2xl mx-auto transform hover:scale-105 transition-transform duration-300"
+                  src={trophy}
+                  alt="Success Champions"
+                  width={240}
+                  height={360}
+                  className="w-full h-auto object-contain rounded-2xl mx-auto transform hover:scale-105 transition-transform duration-300 drop-shadow-sm"
                   priority
                 />
               </motion.div>
 
               {/* Gold Star Badge */}
               <motion.div
-                animate={{ scale: [1, 1.12, 1] }}
+                animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-3 -right-2 bg-gold text-white text-xs font-bold px-3 py-1 rounded-full shadow-md border-2 border-white flex items-center gap-1"
+                className="absolute -top-3 -right-2 bg-gold text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md border-2 border-white flex items-center gap-1 z-10"
               >
                 <Star className="w-3.5 h-3.5 fill-white" />
                 <span>Super Star</span>
